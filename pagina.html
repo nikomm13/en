@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El Círculo Unitario: Demostraciones Visuales e Hilos en Cartón Paja</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+          },
+          colors: {
+            straw: {
+              50: '#fcf9f2',
+              100: '#f6efe0',
+              200: '#ebdcb9',
+              300: '#dfc38b',
+              400: '#d1a65d',
+              500: '#c58f3f',
+              700: '#8a5d25',
+              900: '#4a3114',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- KaTeX para renderizado matemático impecable -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    /* Textura sutil de cartón paja para tarjetas temáticas */
+    .bg-straw-texture {
+      background-color: #f3e7ce;
+      background-image: 
+        radial-gradient(rgba(138, 93, 37, 0.08) 1px, transparent 0),
+        radial-gradient(rgba(180, 130, 60, 0.06) 1px, transparent 0);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+    }
+
+    /* Personalización de sliders */
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      height: 8px;
+      border-radius: 999px;
+      background: #cbd5e1;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #2563eb;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      margin-top: -6px;
+      transition: transform 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* Scrollbar discreta para lista de identidades */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background-color: rgba(148, 163, 184, 0.5);
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-amber-200 selection:text-amber-950">
+
+  <!-- BARRA DE NAVEGACIÓN -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-md group-hover:rotate-12 transition-transform">
+          <!-- Icono SVG Círculo + Vector -->
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="12" cy="12" r="9" />
+            <line x1="12" y1="12" x2="18.36" y2="5.64" stroke="#fde047" />
+            <line x1="18.36" y1="5.64" x2="18.36" y2="12" stroke="#4ade80" />
+            <line x1="12" y1="12" x2="18.36" y2="12" stroke="#60a5fa" />
+            <circle cx="12" cy="12" r="1.5" fill="#ef4444" stroke="none" />
+          </svg>
+        </div>
+        <div>
+          <span class="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg block leading-none">Círculo Unitario Lab</span>
+          <span class="text-xs text-amber-700 font-medium">De Hilbert al Cartón Paja</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+        <a href="#concepto" class="hover:text-amber-600 transition-colors">Analogía Hilbert</a>
+        <a href="#simulador" class="hover:text-amber-600 transition-colors flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Simulador (12 Identidades)
+        </a>
+        <a href="#vlog-construccion" class="hover:text-amber-600 transition-colors">Vlog: Cartón Paja</a>
+        <a href="#github-pages" class="px-3.5 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-colors text-xs font-semibold">
+          Desplegar en GitHub
+        </a>
+      </nav>
+
+      <!-- Botón móvil rápido al simulador -->
+      <a href="#simulador" class="md:hidden px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-semibold shadow-sm">
+        Ir al Simulador
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section id="concepto" class="relative overflow-hidden bg-gradient-to-b from-straw-100 via-straw-50 to-slate-50 pt-10 pb-14 border-b border-straw-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-10 items-center">
+        <!-- Texto principal -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100 border border-amber-300/80 text-amber-900 text-xs font-semibold shadow-sm">
+            <span>📐 Laboratorio Matemático & Maker</span>
+            <span class="text-amber-500">•</span>
+            <span>Inspirado en Manim & Física Tangibles</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Del <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">Espacio de Hilbert</span> al Cartón Paja: Demostraciones con Hilos
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-700 leading-relaxed">
+            Comprende la trigonometría sin memorizar fórmulas a ciegas. Transforma un octavo de <strong>cartón paja, chinches e hilos de colores</strong> en un espacio vectorial bidimensional donde cada hilo tenso es un vector de norma unitaria ($r = 1$) y cada sombra es una proyección ortogonal.
+          </p>
+
+          <div class="flex flex-wrap gap-3 pt-2">
+            <a href="#simulador" class="px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg shadow-slate-900/15 transition-all flex items-center gap-2">
+              <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Explorar 12 Identidades Visuales
+            </a>
+            <a href="#vlog-construccion" class="px-6 py-3.5 rounded-xl bg-white hover:bg-amber-50 text-slate-800 border border-slate-300 font-semibold text-sm shadow-sm transition-all flex items-center gap-2">
+              <span>🧶 Armar Modelo en Cartón Paja</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Tarjetas de Analogía Matemática -->
+        <div class="lg:col-span-5 grid sm:grid-cols-2 lg:grid-cols-1 gap-4">
+          <div class="bg-white/95 p-5 rounded-2xl border border-straw-200 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0 text-lg">1</div>
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm sm:text-base">Vectores como Hilos Tensos</h3>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  En un espacio de Hilbert trabajamos con elementos con magnitud y dirección. El hilo anclado al chinche central $(0,0)$ mantiene una <strong>norma constante $\|v\| = 1$</strong> al girar.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white/95 p-5 rounded-2xl border border-straw-200 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0 text-lg">2</div>
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm sm:text-base">Ortogonalidad y Producto Interno</h3>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  Proyectar el punto $P(\theta)$ perpendicularmente sobre los ejes $X$ e $Y$ equivale al producto interno con las bases ortonormales: <strong>hilo azul ($\cos\theta$)</strong> e <strong>hilo verde ($\operatorname{sen}\theta$)</strong>.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white/95 p-5 rounded-2xl border border-straw-200 shadow-sm hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1">
+            <div class="flex items-start gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0 text-lg">3</div>
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm sm:text-base">Invarianza y Geometría Externa</h3>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  Sin importar cuánto cambien los catetos, el triángulo rectángulo conserva la métrica $\cos^2\theta + \operatorname{sen}^2\theta = 1$. Al extender hilos fuera del borde nacen $\tan\theta$ y $\sec\theta$.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN PRINCIPAL: SIMULADOR INTERACTIVO DE 12 IDENTIDADES -->
+  <section id="simulador" class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-amber-700">Laboratorio Interactivo en Tiempo Real</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+          Demostraciones Visuales de 12 Identidades Trigonométricas
+        </h2>
+        <p class="text-sm text-slate-600 mt-1 max-w-2xl">
+          Selecciona una identidad del menú, mueve el ángulo $\theta$ (o activa la animación) y observa cómo se tensan los hilos sobre el tablero.
+        </p>
+      </div>
+
+      <!-- Selector de Tema Visual del Canvas -->
+      <div class="inline-flex items-center p-1 rounded-xl bg-slate-200/80 border border-slate-300 self-start">
+        <button id="btn-theme-straw" onclick="setCanvasTheme('straw')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-600 text-white shadow-sm flex items-center gap-1.5">
+          <span>🧶 Vista Cartón Paja</span>
+        </button>
+        <button id="btn-theme-manim" onclick="setCanvasTheme('manim')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-700 hover:text-slate-900 flex items-center gap-1.5">
+          <span>🎬 Vista Manim Oscuro</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- GRID DEL SIMULADOR: MENÚ + CANVAS + PANEL PEDAGÓGICO -->
+    <div class="grid lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- COLUMNA 1: SELECTOR DE 12 IDENTIDADES (3 cols en desktop) -->
+      <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+          <span class="font-bold text-sm">12 Identidades</span>
+          <span id="badge-category" class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30">Fundamentos</span>
+        </div>
+        <div id="identity-list" class="p-2 max-h-[420px] lg:max-h-[620px] overflow-y-auto custom-scroll space-y-1">
+          <!-- Se llena dinámicamente con JS -->
+        </div>
+      </div>
+
+      <!-- COLUMNA 2: LIENZO INTERACTIVO + CONTROLES (5 cols en desktop) -->
+      <div class="lg:col-span-5 space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-md p-3 sm:p-4">
+          <!-- Contenedor responsivo del Canvas -->
+          <div id="canvas-wrapper" class="relative w-full aspect-square rounded-xl overflow-hidden border-2 border-straw-300 shadow-inner bg-straw-texture">
+            <canvas id="unitCanvas" class="w-full h-full block touch-none"></canvas>
+            
+            <!-- Overlay superior: Lectura angular -->
+            <div id="canvas-hud-top" class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+              <div class="px-2.5 py-1 rounded-lg bg-slate-900/80 backdrop-blur-sm text-white text-xs font-mono shadow">
+                θ = <span id="hud-deg" class="text-amber-300 font-bold">30°</span> (<span id="hud-rad" class="text-slate-300">0.52 rad</span>)
+              </div>
+              <div id="hud-beta-badge" class="hidden px-2.5 py-1 rounded-lg bg-purple-900/85 backdrop-blur-sm text-white text-xs font-mono shadow">
+                β = <span id="hud-beta-deg" class="text-purple-300 font-bold">25°</span>
+              </div>
+            </div>
+
+            <!-- Leyenda rápida de colores de hilos -->
+            <div class="absolute bottom-2.5 left-2.5 right-2.5 flex flex-wrap gap-1.5 justify-center pointer-events-none">
+              <span class="px-2 py-0.5 rounded bg-black/75 text-yellow-300 text-[10px] font-semibold">● Hilo Radio (1)</span>
+              <span class="px-2 py-0.5 rounded bg-black/75 text-sky-300 text-[10px] font-semibold">● Hilo Coseno</span>
+              <span class="px-2 py-0.5 rounded bg-black/75 text-emerald-300 text-[10px] font-semibold">● Hilo Seno</span>
+              <span class="px-2 py-0.5 rounded bg-black/75 text-orange-300 text-[10px] font-semibold">● Hilo Aux/Tan</span>
+            </div>
+          </div>
+
+          <!-- CONTROLES DEL ÁNGULO Y ANIMACIÓN -->
+          <div class="mt-4 space-y-4">
+            <!-- Slider Principal Theta -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-semibold text-slate-700 mb-1.5">
+                <label for="theta-slider">Ángulo Principal ($\theta$): <span id="label-theta-val" class="font-mono text-blue-600">30°</span></label>
+                <div class="flex items-center gap-1.5">
+                  <button id="btn-play" onclick="togglePlay()" class="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1">
+                    <span id="play-icon">▶</span> <span id="play-text">Animar</span>
+                  </button>
+                </div>
+              </div>
+              <input id="theta-slider" type="range" min="0" max="360" step="1" value="30" class="w-full" />
+            </div>
+
+            <!-- Slider Secundario Beta (Visible solo en Suma de Ángulos) -->
+            <div id="beta-control-box" class="hidden p-3 rounded-xl bg-purple-50 border border-purple-200">
+              <div class="flex items-center justify-between text-xs font-semibold text-purple-900 mb-1.5">
+                <label for="beta-slider">Ángulo Secundario ($\beta$): <span id="label-beta-val" class="font-mono text-purple-700">25°</span></label>
+                <span class="text-[11px] text-purple-600">Ángulo apilado</span>
+              </div>
+              <input id="beta-slider" type="range" min="5" max="75" step="1" value="25" class="w-full" />
+            </div>
+
+            <!-- Botones de anclaje rápido (Ángulos notables) -->
+            <div>
+              <span class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Chinches de Ángulos Notables:</span>
+              <div class="grid grid-cols-6 gap-1.5">
+                <button onclick="setTheta(0)" class="py-1.5 rounded-lg bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 font-mono text-xs font-semibold border border-slate-200 transition-colors">0°</button>
+                <button onclick="setTheta(30)" class="py-1.5 rounded-lg bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 font-mono text-xs font-semibold border border-slate-200 transition-colors">30°</button>
+                <button onclick="setTheta(45)" class="py-1.5 rounded-lg bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 font-mono text-xs font-semibold border border-slate-200 transition-colors">45°</button>
+                <button onclick="setTheta(60)" class="py-1.5 rounded-lg bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 font-mono text-xs font-semibold border border-slate-200 transition-colors">60°</button>
+                <button onclick="setTheta(120)" class="py-1.5 rounded-lg bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 font-mono text-xs font-semibold border border-slate-200 transition-colors">120°</button>
+                <button onclick="setTheta(210)" class="py-1.5 rounded-lg bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 font-mono text-xs font-semibold border border-slate-200 transition-colors">210°</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA 3: EXPLICACIÓN MATEMÁTICA Y GUÍA FÍSICA DE HILOS (4 cols en desktop) -->
+      <div class="lg:col-span-4 space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-5">
+          <!-- Cabecera de la identidad -->
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-amber-700 uppercase tracking-wider">
+              <span id="detail-number">Identidad #1</span>
+              <span>•</span>
+              <span id="detail-cat">Fundamentos</span>
+            </div>
+            <h3 id="detail-title" class="text-xl font-extrabold text-slate-900 mt-1">Parametrización Polar</h3>
+          </div>
+
+          <!-- Caja de Fórmula KaTeX -->
+          <div class="p-4 rounded-xl bg-slate-900 text-white text-center shadow-inner overflow-x-auto">
+            <div id="detail-formula" class="text-base sm:text-lg font-medium"></div>
+          </div>
+
+          <!-- Valores Numéricos en Tiempo Real -->
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Verificación Numérica en Vivo</div>
+            <div id="live-values" class="grid grid-cols-2 gap-2 text-xs font-mono">
+              <!-- Actualizado en tiempo real por JS -->
+            </div>
+          </div>
+
+          <!-- Explicación Geométrica -->
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1.5">
+              <span>📐</span> Demostración Geométrica
+            </h4>
+            <p id="detail-explanation" class="text-sm text-slate-700 leading-relaxed">
+              <!-- Texto dinámico -->
+            </p>
+          </div>
+
+          <!-- Instrucción Física en Cartón Paja -->
+          <div class="p-4 rounded-xl bg-amber-50/90 border border-amber-200/90 space-y-2">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+              <span>📌</span> Cómo atar los hilos en el Cartón Paja
+            </h4>
+            <p id="detail-physical" class="text-xs sm:text-sm text-amber-950 leading-relaxed">
+              <!-- Instrucción física dinámica -->
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECCIÓN VLOG / PASO A PASO DE CONSTRUCCIÓN FÍSICA EN CARTÓN PAJA -->
+  <section id="vlog-construccion" class="py-14 bg-straw-100/70 border-t border-straw-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Encabezado Vlog -->
+      <div class="max-w-3xl mb-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-800 border border-orange-200 text-xs font-bold mb-3">
+          <span>🎥 Vlog Taller Maker</span>
+          <span>•</span>
+          <span>Construcción Física Paso a Paso</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+          Arma tu Tablero Trigonométrico en Cartón Paja con Chinches e Hilos
+        </h2>
+        <p class="text-sm sm:text-base text-slate-700 mt-2 leading-relaxed">
+          Sigue estos 4 episodios prácticos para construir tu propio círculo unitario físico. Ideal para proyectos escolares de grados 9° a 11°, laboratorios universitarios o demostraciones en clase.
+        </p>
+      </div>
+
+      <!-- CHECKLIST INTERACTIVO DE MATERIALES Y AVANCE -->
+      <div class="bg-white rounded-2xl border border-straw-300 shadow-sm p-6 mb-10">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+              <span>🎒</span> Checklist de Materiales y Montaje
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">Marca cada elemento a medida que lo consigas o completes (tu progreso se guarda automáticamente).</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <span id="checklist-percent" class="text-sm font-extrabold text-amber-700">0%</span>
+              <span class="text-xs text-slate-500 block">Completado</span>
+            </div>
+            <div class="w-28 h-2.5 bg-slate-200 rounded-full overflow-hidden">
+              <div id="checklist-bar" class="h-full bg-amber-600 transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <button onclick="resetChecklist()" class="text-xs text-slate-400 hover:text-red-600 underline ml-1" title="Reiniciar lista">Reiniciar</button>
+          </div>
+        </div>
+
+        <div id="materials-grid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-5">
+          <!-- Renderizado por JS -->
+        </div>
+      </div>
+
+      <!-- 4 EPISODIOS DEL VLOG CON ILUSTRACIONES SVG -->
+      <div class="grid md:grid-cols-2 gap-8">
+        
+        <!-- EPISODIO 1 -->
+        <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div class="bg-straw-texture p-6 border-b border-straw-200 flex items-center justify-center relative">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold">Episodio 01</span>
+            <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-amber-600 text-white text-xs font-semibold">Compás de Hilo</span>
+            <!-- SVG Ilustración Episodio 1 -->
+            <svg class="w-full max-w-[280px] h-44" viewBox="0 0 280 180">
+              <!-- Tablero Cartón Paja -->
+              <rect x="20" y="15" width="240" height="150" rx="8" fill="#ebd5a7" stroke="#b4833e" stroke-width="2.5"/>
+              <!-- Circunferencia punteada trazándose -->
+              <circle cx="140" cy="90" r="60" fill="none" stroke="#1e293b" stroke-width="2" stroke-dasharray="5,4"/>
+              <!-- Hilo tenso desde centro al lápiz -->
+              <line x1="140" y1="90" x2="192" y2="60" stroke="#eab308" stroke-width="3"/>
+              <!-- Chinche central -->
+              <circle cx="140" cy="90" r="6" fill="#dc2626" stroke="#ffffff" stroke-width="1.5"/>
+              <!-- Lápiz trazando -->
+              <g transform="translate(192, 60) rotate(-30)">
+                <rect x="-4" y="-36" width="8" height="30" rx="1" fill="#f59e0b" stroke="#78350f" stroke-width="1"/>
+                <polygon points="-4,-6 4,-6 0,2" fill="#fde68a" stroke="#78350f" stroke-width="1"/>
+                <polygon points="-1.5,0 1.5,0 0,3" fill="#1e293b"/>
+              </g>
+              <text x="140" y="160" text-anchor="middle" font-size="10" font-family="monospace" fill="#5c3d16" font-weight="bold">Radio R = 10 cm (1 Unidad)</text>
+            </svg>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="text-lg font-extrabold text-slate-900">1. Preparación del Tablero y Compás de Hilo</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Toma un octavo (o cuarto) de <strong>cartón paja</strong>. Ubica el centro geométrico con una regla y clava un <strong>chinche metálico</strong> firme. Ata un trozo de hilo de exactamente <strong>10 cm</strong> (o 15 cm si usas 1/4 de pliego) entre el chinche central y la punta de un lápiz.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700">
+              <strong>💡 Tip Maker:</strong> Gira el lápiz manteniendo el hilo siempre tenso y perpendicular al cartón. Esa longitud $R = 10\text{ cm}$ equivale matemáticamente a <strong>$1\text{ unidad}$</strong>.
+            </div>
+          </div>
+        </article>
+
+        <!-- EPISODIO 2 -->
+        <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div class="bg-straw-texture p-6 border-b border-straw-200 flex items-center justify-center relative">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold">Episodio 02</span>
+            <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-semibold">Ejes y Chinches</span>
+            <!-- SVG Ilustración Episodio 2 -->
+            <svg class="w-full max-w-[280px] h-44" viewBox="0 0 280 180">
+              <rect x="20" y="15" width="240" height="150" rx="8" fill="#ebd5a7" stroke="#b4833e" stroke-width="2.5"/>
+              <!-- Ejes X e Y -->
+              <line x1="40" y1="90" x2="240" y2="90" stroke="#1e293b" stroke-width="1.8"/>
+              <line x1="140" y1="22" x2="140" y2="158" stroke="#1e293b" stroke-width="1.8"/>
+              <circle cx="140" cy="90" r="58" fill="none" stroke="#1e293b" stroke-width="2"/>
+              <!-- Chinches en ángulos notables -->
+              <circle cx="140" cy="90" r="5" fill="#dc2626" stroke="#fff" stroke-width="1.2"/>
+              <circle cx="198" cy="90" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="1.2"/>
+              <circle cx="190" cy="61" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="1.2"/>
+              <circle cx="181" cy="49" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="1.2"/>
+              <circle cx="169" cy="40" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="1.2"/>
+              <circle cx="140" cy="32" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="1.2"/>
+              <circle cx="82" cy="90" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="1.2"/>
+              <circle cx="140" cy="148" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="1.2"/>
+              <text x="205" y="58" font-size="9" font-family="monospace" fill="#1e3a8a" font-weight="bold">30°</text>
+              <text x="193" y="44" font-size="9" font-family="monospace" fill="#1e3a8a" font-weight="bold">45°</text>
+              <text x="176" y="33" font-size="9" font-family="monospace" fill="#1e3a8a" font-weight="bold">60°</text>
+            </svg>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="text-lg font-extrabold text-slate-900">2. Ejes Ortogonales y Chinches en el Contorno</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Traza con marcador negro los ejes perpendiculares $X$ (coseno) e $Y$ (seno) cruzando por $(0,0)$. Usa un transportador para marcar los ángulos notables ($0^\circ, 30^\circ, 45^\circ, 60^\circ, 90^\circ, 120^\circ, 180^\circ, 270^\circ$) e inserta <strong>chinches de cabeza plástica</strong> sobre el perímetro.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700">
+              <strong>💡 Tip Maker:</strong> Si el cartón paja es delgado, pega un segundo recorte debajo o coloca pequeños cuadros de foami/borrador en la parte trasera para que las puntas de los chinches no rayen la mesa.
+            </div>
+          </div>
+        </article>
+
+        <!-- EPISODIO 3 -->
+        <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div class="bg-straw-texture p-6 border-b border-straw-200 flex items-center justify-center relative">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold">Episodio 03</span>
+            <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-xs font-semibold">Proyecciones</span>
+            <!-- SVG Ilustración Episodio 3 -->
+            <svg class="w-full max-w-[280px] h-44" viewBox="0 0 280 180">
+              <rect x="20" y="15" width="240" height="150" rx="8" fill="#ebd5a7" stroke="#b4833e" stroke-width="2.5"/>
+              <line x1="40" y1="90" x2="240" y2="90" stroke="#64748b" stroke-width="1.2"/>
+              <line x1="140" y1="22" x2="140" y2="158" stroke="#64748b" stroke-width="1.2"/>
+              <circle cx="140" cy="90" r="58" fill="none" stroke="#334155" stroke-width="1.5"/>
+              <!-- Triángulo de hilos de colores -->
+              <!-- Coseno (azul) -->
+              <line x1="140" y1="90" x2="181" y2="90" stroke="#2563eb" stroke-width="3.5"/>
+              <!-- Seno (verde) -->
+              <line x1="181" y1="90" x2="181" y2="49" stroke="#16a34a" stroke-width="3.5"/>
+              <!-- Radio (amarillo) -->
+              <line x1="140" y1="90" x2="181" y2="49" stroke="#eab308" stroke-width="3.5"/>
+              <!-- Chinches -->
+              <circle cx="140" cy="90" r="5" fill="#dc2626"/>
+              <circle cx="181" cy="49" r="5" fill="#dc2626"/>
+              <circle cx="181" cy="90" r="4" fill="#1e293b"/>
+              <text x="155" y="102" font-size="9" font-family="sans-serif" fill="#1d4ed8" font-weight="bold">cos θ</text>
+              <text x="187" y="72" font-size="9" font-family="sans-serif" fill="#15803d" font-weight="bold">sen θ</text>
+            </svg>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="text-lg font-extrabold text-slate-900">3. Sistema de Hilos Tensos y Sombras Ortogonales</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Ata un <strong>hilo amarillo</strong> en el chinche central $(0,0)$ y llévalo hasta el chinche del ángulo $\theta$ (ej. $45^\circ$). Desde ese mismo chinche, deja caer perpendicularmente un <strong>hilo verde</strong> hacia el eje $X$ (usando una escuadra) y tiende un <strong>hilo azul</strong> desde el origen hasta el pie de la perpendicular.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700">
+              <strong>💡 Tip Maker:</strong> Mide con la regla ambos catetos en centímetros y divide entre $10$. Si $\theta = 30^\circ$, verás físicamente que el hilo verde mide $5.0\text{ cm} \rightarrow \operatorname{sen}(30^\circ) = 0.5$.
+            </div>
+          </div>
+        </article>
+
+        <!-- EPISODIO 4 -->
+        <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div class="bg-straw-texture p-6 border-b border-straw-200 flex items-center justify-center relative">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold">Episodio 04</span>
+            <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-orange-600 text-white text-xs font-semibold">Tangente & Secante</span>
+            <!-- SVG Ilustración Episodio 4 -->
+            <svg class="w-full max-w-[280px] h-44" viewBox="0 0 280 180">
+              <rect x="20" y="15" width="240" height="150" rx="8" fill="#ebd5a7" stroke="#b4833e" stroke-width="2.5"/>
+              <line x1="40" y1="110" x2="240" y2="110" stroke="#64748b" stroke-width="1.2"/>
+              <line x1="120" y1="22" x2="120" y2="158" stroke="#64748b" stroke-width="1.2"/>
+              <circle cx="120" cy="110" r="48" fill="none" stroke="#334155" stroke-width="1.5"/>
+              <!-- Recta tangente vertical en x=1 -->
+              <line x1="168" y1="25" x2="168" y2="155" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <!-- Base radio = 1 -->
+              <line x1="120" y1="110" x2="168" y2="110" stroke="#0f172a" stroke-width="3"/>
+              <!-- Tangente (naranja) -->
+              <line x1="168" y1="110" x2="168" y2="52" stroke="#ea580c" stroke-width="3.5"/>
+              <!-- Secante extendida (rojo) -->
+              <line x1="120" y1="110" x2="168" y2="52" stroke="#dc2626" stroke-width="3"/>
+              <!-- Chinches -->
+              <circle cx="120" cy="110" r="4.5" fill="#dc2626"/>
+              <circle cx="168" cy="110" r="4.5" fill="#1e293b"/>
+              <circle cx="168" cy="52" r="5" fill="#ea580c" stroke="#fff" stroke-width="1"/>
+              <text x="174" y="84" font-size="9" font-family="sans-serif" fill="#c2410c" font-weight="bold">tan θ</text>
+              <text x="128" y="75" font-size="9" font-family="sans-serif" fill="#b91c1c" font-weight="bold">sec θ</text>
+            </svg>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="text-lg font-extrabold text-slate-900">4. Extensión Externa: Tangente, Secante y Simetrías</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Para demostrar $1 + \tan^2\theta = \sec^2\theta$, traza una línea vertical rozando el borde derecho del círculo en $(1,0)$. Extiende el <strong>hilo rojo (secante)</strong> desde el centro pasando por el ángulo $\theta$ hasta tocar esa línea vertical, donde clavarás un chinche auxiliar para tensar el <strong>hilo naranja (tangente)</strong>.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700">
+              <strong>💡 Tip Maker:</strong> Usa dos hilos simultáneos (uno arriba en $+\theta$ y otro abajo en $-\theta$) para demostrar visualmente la paridad $\cos(-\theta) = \cos(\theta)$.
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN DESPLIEGUE EN GITHUB PAGES -->
+  <section id="github-pages" class="py-12 bg-slate-900 text-slate-200 border-t border-slate-800">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Listo para Producción Web</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white mt-1">
+            Cómo publicar esta página gratis en GitHub Pages en 3 pasos
+          </h2>
+        </div>
+        <button onclick="toggleGithubSteps()" id="btn-toggle-gh" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 self-start md:self-auto transition-colors">
+          Ocultar / Mostrar Guía
+        </button>
+      </div>
+
+      <div id="gh-steps-container" class="grid md:grid-cols-3 gap-6 pt-6">
+        <div class="p-5 rounded-2xl bg-slate-800/70 border border-slate-700/80 space-y-2">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-sm">1</div>
+          <h3 class="font-bold text-white text-sm">Crea un repositorio en GitHub</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Ingresa a <code class="text-amber-300">github.com</code>, crea un repositorio público nuevo (por ejemplo <code class="text-amber-300">circulo-unitario-lab</code>) y sube este único archivo guardado exactamente como <code class="text-emerald-300 font-semibold">index.html</code>.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-800/70 border border-slate-700/80 space-y-2">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-sm">2</div>
+          <h3 class="font-bold text-white text-sm">Activa GitHub Pages</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Ve a la pestaña <strong>Settings &rarr; Pages</strong> de tu repositorio. En <em>Build and deployment &rarr; Source</em> elige <strong>Deploy from a branch</strong>, selecciona la rama <code class="text-amber-300">main</code> y la carpeta <code class="text-amber-300">/ (root)</code>. Haz clic en <strong>Save</strong>.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-800/70 border border-slate-700/80 space-y-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold flex items-center justify-center text-sm">3</div>
+          <h3 class="font-bold text-white text-sm">Comparte tu Laboratorio</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            En menos de 1 minuto GitHub generará tu enlace público (<code class="text-sky-300">https://tu-usuario.github.io/circulo-unitario-lab/</code>) listo para proyectar en clase o abrir desde cualquier celular.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
+        <p>Proyecto Pedagógico: Círculo Unitario en Cartón Paja & Demostraciones Visuales.</p>
+        <p>Renderizado matemático con KaTeX & HTML5 Canvas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- JAVASCRIPT DE SIMULACIÓN, KATEX Y CHECKLIST -->
+  <script>
+    // =========================================================================
+    // 1. DATOS DE LAS 12 IDENTIDADES TRIGONOMÉTRICAS
+    // =========================================================================
+    const IDENTITIES = [
+      {
+        id: 1,
+        category: "Fundamentos",
+        shortTitle: "1. Parametrización Polar",
+        title: "Parametrización Polar del Círculo Unitario",
+        latex: "P(\\theta) = (\\cos\\theta,\\, \\operatorname{sen}\\theta) \\quad \\Longrightarrow \\quad x^2 + y^2 = 1",
+        explanation: "Todo punto P sobre la circunferencia de radio R = 1 queda unívocamente determinado por el ángulo θ medido desde el semieje positivo X. La abscisa x corresponde a la proyección horizontal cos(θ) y la ordenada y a la proyección vertical sen(θ).",
+        physical: "Clava un chinche en el origen (0,0) y otro en el borde del círculo al ángulo θ. Tiende el hilo amarillo como radio (10 cm = 1 unidad). Proyecta con escuadra el hilo azul sobre el eje X y el hilo verde verticalmente hasta el punto P."
+      },
+      {
+        id: 2,
+        category: "Pitagóricas",
+        shortTitle: "2. Identidad Pitagórica",
+        title: "Identidad Pitagórica Fundamental",
+        latex: "\\operatorname{sen}^2(\\theta) + \\cos^2(\\theta) = 1",
+        explanation: "El hilo del radio (hipotenusa = 1), la proyección horizontal (cateto adyacente = cos θ) y la proyección vertical (cateto opuesto = sen θ) forman siempre un triángulo rectángulo. Por el Teorema de Pitágoras, la suma de los cuadrados de los catetos es constante e igual a 1.",
+        physical: "Forma un triángulo cerrado atando el hilo amarillo (hipotenusa fija de 10 cm), el hilo azul en la base y el hilo verde en la altura. Mueve el chinche del perímetro a distintos ángulos: los catetos cambian de longitud, pero la hipotenusa nunca varía."
+      },
+      {
+        id: 3,
+        category: "Pitagóricas",
+        shortTitle: "3. Tangente y Secante",
+        title: "Identidad de Tangente y Secante",
+        latex: "1 + \\tan^2(\\theta) = \\sec^2(\\theta)",
+        explanation: "Al trazar una recta tangente vertical al círculo en (1, 0) y prolongar el radio hasta cortarla, se forma un triángulo rectángulo semejante al fundamental cuya base mide 1, su altura mide tan(θ) y su hipotenusa mide sec(θ).",
+        physical: "Traza una línea vertical rozando el borde derecho (1,0). Clava un chinche en (1,0) y otro donde el hilo rojo (prolongación del radio) corta esa línea vertical. El segmento naranja vertical entre ambos chinches es tan(θ) y el hilo rojo total desde (0,0) es sec(θ)."
+      },
+      {
+        id: 4,
+        category: "Pitagóricas",
+        shortTitle: "4. Cotangente y Cosecante",
+        title: "Identidad de Cotangente y Cosecante",
+        latex: "1 + \\cot^2(\\theta) = \\csc^2(\\theta)",
+        explanation: "Trazando una recta tangente horizontal en el polo superior (0, 1) y prolongando el radio hasta cortarla, obtenemos un triángulo rectángulo superior de altura 1, base horizontal cot(θ) e hipotenusa csc(θ).",
+        physical: "Traza una línea horizontal en la cima del círculo (0,1). Extiende el hilo rojo desde el origen pasando por θ hasta tocar esa línea superior. El hilo naranja horizontal desde el eje Y hasta ese corte mide cot(θ)."
+      },
+      {
+        id: 5,
+        category: "Paridad",
+        shortTitle: "5. Paridad del Coseno",
+        title: "Paridad del Coseno (Función Par)",
+        latex: "\\cos(-\\theta) = \\cos(\\theta)",
+        explanation: "El ángulo -θ es la reflexión simétrica de +θ respecto al eje horizontal X. Ambos puntos P(θ) y P(-θ) comparten exactamente la misma coordenada horizontal x, demostrando que el coseno es una función par.",
+        physical: "Coloca dos chinches simétricos en el borde: uno arriba en +θ y otro abajo en -θ (ej. +45° y -45°). Tiende dos hilos amarillos desde el centro. Verás que ambos comparten exactamente el mismo hilo azul horizontal sobre el eje X."
+      },
+      {
+        id: 6,
+        category: "Paridad",
+        shortTitle: "6. Paridad del Seno",
+        title: "Paridad del Seno (Función Impar)",
+        latex: "\\operatorname{sen}(-\\theta) = -\\operatorname{sen}(\\theta)",
+        explanation: "Al reflejar el ángulo +θ hacia -θ debajo del eje X, la proyección vertical conserva exactamente la misma magnitud geométrica pero invierte su sentido hacia el semiplano negativo y < 0.",
+        physical: "Con los mismos dos chinches simétricos (+θ y -θ), tiende un hilo verde hacia arriba y otro hilo naranja hacia abajo desde el mismo punto del eje X. Mide ambos con regla: tienen idéntica longitud pero sentidos opuestos."
+      },
+      {
+        id: 7,
+        category: "Paridad",
+        shortTitle: "7. Paridad de la Tangente",
+        title: "Paridad de la Tangente (Función Impar)",
+        latex: "\\tan(-\\theta) = -\\tan(\\theta)",
+        explanation: "Como tan(θ) = sen(θ)/cos(θ), al evaluar en -θ el numerador cambia de signo mientras el denominador permanece igual. Geométricamente, las prolongaciones de +θ y -θ cortan la recta tangente x = 1 a distancias iguales arriba y abajo del eje X.",
+        physical: "Prolonga tanto el hilo de +θ como el de -θ hasta la recta vertical en x = 1. Observarás dos segmentos tangentes simétricos respecto al punto (1,0), uno ascendente y otro descendente."
+      },
+      {
+        id: 8,
+        category: "Complementarios",
+        shortTitle: "8. Seno Complementario",
+        title: "Seno de Ángulos Complementarios",
+        latex: "\\operatorname{sen}\\left(\\frac{\\pi}{2} - \\theta\\right) = \\cos(\\theta)",
+        explanation: "El ángulo complementario (90° - θ) refleja el punto P(θ) respecto a la diagonal y = x. Esta reflexión intercambia los catetos: la altura vertical del ángulo complementario (sen(90° - θ)) coincide exactamente con la base horizontal original (cos θ).",
+        physical: "Clava un chinche en θ (ej. 30°) y otro en 90° - θ (60°). Mide con regla el hilo verde vertical del chinche de 60° y compáralo con el hilo azul horizontal del chinche de 30°: ¡miden exactamente lo mismo!"
+      },
+      {
+        id: 9,
+        category: "Complementarios",
+        shortTitle: "9. Coseno Complementario",
+        title: "Coseno de Ángulos Complementarios",
+        latex: "\\cos\\left(\\frac{\\pi}{2} - \\theta\\right) = \\operatorname{sen}(\\theta)",
+        explanation: "Por la misma simetría respecto a la bisectriz del primer cuadrante (y = x), la proyección horizontal del ángulo (90° - θ) es idéntica a la proyección vertical del ángulo original θ.",
+        physical: "Manteniendo los chinches en θ y 90° - θ, compara la base horizontal del triángulo complementario (morado) con la altura vertical del triángulo original (verde). Ambas longitudes son idénticas en el cartón."
+      },
+      {
+        id: 10,
+        category: "Suplementarios",
+        shortTitle: "10. Ángulos Suplementarios",
+        title: "Relaciones en el Segundo Cuadrante (π - θ)",
+        latex: "\\operatorname{sen}(\\pi - \\theta) = \\operatorname{sen}(\\theta), \\quad \\cos(\\pi - \\theta) = -\\cos(\\theta)",
+        explanation: "El ángulo suplementario (180° - θ) es el reflejo especular de θ respecto al eje vertical Y. Por ello, ambos puntos están a la misma altura (seno idéntico), pero en lados opuestos del eje Y (coseno con signo contrario).",
+        physical: "Coloca un chinche en θ (ej. 40°) y otro en 180° - θ (140°). Tiende un hilo horizontal entre ambos chinches: verás que es completamente paralelo al eje X (misma altura sen θ) y queda dividido en dos partes iguales por el eje Y."
+      },
+      {
+        id: 11,
+        category: "Compuestos",
+        shortTitle: "11. Suma de Ángulos",
+        title: "Seno de la Suma de Ángulos",
+        latex: "\\operatorname{sen}(\\alpha + \\beta) = \\operatorname{sen}(\\alpha)\\cos(\\beta) + \\cos(\\alpha)\\operatorname{sen}(\\beta)",
+        explanation: "Apilando un triángulo rectángulo con ángulo β sobre el radio inclinado en ángulo α, la altura total sen(α + β) se descompone en dos tramos verticales: un tramo inferior igual a sen(α)cos(β) y un tramo superior igual a cos(α)sen(β).",
+        physical: "Usa los dos sliders (θ = α y β). En el cartón, clava chinches en α y en α + β. Desde el chinche en α + β baja una perpendicular al radio de α (creando un triángulo superior) y observa cómo su altura vertical total es la suma de dos segmentos."
+      },
+      {
+        id: 12,
+        category: "Compuestos",
+        shortTitle: "12. Ángulo Doble",
+        title: "Identidades del Ángulo Doble",
+        latex: "\\operatorname{sen}(2\\theta) = 2\\operatorname{sen}(\\theta)\\cos(\\theta), \\quad \\cos(2\\theta) = \\cos^2(\\theta) - \\operatorname{sen}^2(\\theta)",
+        explanation: "Al duplicar el ángulo θ hasta 2θ sobre la circunferencia, la cuerda que une el origen (1,0) con P(2θ) es bisecada perpendicularmente por el radio en ángulo θ. De la geometría de ese triángulo isósceles emergen directamente sen(2θ) y cos(2θ).",
+        physical: "Clava chinches en 0°, θ y 2θ. Tiende un hilo desde (1,0) hasta 2θ: verás que el hilo del radio en θ corta exactamente por la mitad a esa cuerda en ángulo recto (90°)."
+      }
+    ];
+
+    // =========================================================================
+    // 2. MATERIALES PARA EL CHECKLIST INTERACTIVO (PERSISTENTE EN LOCALSTORAGE)
+    // =========================================================================
+    const CHECKLIST_ITEMS = [
+      { id: "m1", text: "1/8 o 1/4 de Cartón Paja grueso", tag: "Base" },
+      { id: "m2", text: "Chinches metálicos o pines plásticos", tag: "Anclajes" },
+      { id: "m3", text: "Hilo/Estambre Amarillo (Radio R=1)", tag: "Vector" },
+      { id: "m4", text: "Hilo/Estambre Azul (Proyección Coseno)", tag: "Eje X" },
+      { id: "m5", text: "Hilo/Estambre Verde (Proyección Seno)", tag: "Eje Y" },
+      { id: "m6", text: "Hilo Naranja y Rojo (Tan, Sec y Auxiliar)", tag: "Externos" },
+      { id: "m7", text: "Regla (30 cm), Escuadra y Transportador", tag: "Medición" },
+      { id: "m8", text: "Trazar círculo R=10cm y probar 3 identidades", tag: "Reto" }
+    ];
+
+    // =========================================================================
+    // 3. ESTADO GLOBAL DEL SIMULADOR
+    // =========================================================================
+    let state = {
+      selectedId: 1,
+      thetaDeg: 30,
+      betaDeg: 25,
+      isPlaying: false,
+      theme: 'straw', // 'straw' | 'manim'
+      animFrameId: null,
+      lastTimestamp: 0
+    };
+
+    const canvas = document.getElementById('unitCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // =========================================================================
+    // 4. INICIALIZACIÓN Y RENDERIZADO DE UI
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      renderIdentityList();
+      renderChecklist();
+      selectIdentity(1);
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Listeners de sliders
+      const thetaSlider = document.getElementById('theta-slider');
+      thetaSlider.addEventListener('input', (e) => {
+        state.thetaDeg = parseFloat(e.target.value);
+        updateUI();
+        drawScene();
+      });
+
+      const betaSlider = document.getElementById('beta-slider');
+      betaSlider.addEventListener('input', (e) => {
+        state.betaDeg = parseFloat(e.target.value);
+        updateUI();
+        drawScene();
+      });
+
+      // Interacción directa arrastrando sobre el Canvas (Mouse & Touch)
+      setupCanvasPointerInteraction();
+
+      // Render inicial de KaTeX en toda la página
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ]
+        });
+      }
+    });
+
+    function renderIdentityList() {
+      const container = document.getElementById('identity-list');
+      container.innerHTML = IDENTITIES.map(item => `
+        <button 
+          onclick="selectIdentity(${item.id})"
+          id="id-btn-${item.id}"
+          class="w-full text-left px-3 py-2.5 rounded-xl text-xs transition-all flex items-center justify-between gap-2 border ${
+            state.selectedId === item.id 
+              ? 'bg-amber-50 border-amber-400 text-amber-950 font-bold shadow-sm' 
+              : 'bg-white border-transparent hover:bg-slate-100 text-slate-700 font-medium'
+          }"
+        >
+          <span class="truncate">${item.shortTitle}</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 shrink-0">${item.category}</span>
+        </button>
+      `).join('');
+    }
+
+    function selectIdentity(id) {
+      state.selectedId = id;
+      const item = IDENTITIES.find(i => i.id === id);
+      if (!item) return;
+
+      // Actualizar estilos de botones en el menú
+      IDENTITIES.forEach(i => {
+        const btn = document.getElementById(`id-btn-${i.id}`);
+        if (btn) {
+          if (i.id === id) {
+            btn.className = 'w-full text-left px-3 py-2.5 rounded-xl text-xs transition-all flex items-center justify-between gap-2 border bg-amber-50 border-amber-400 text-amber-950 font-bold shadow-sm';
+          } else {
+            btn.className = 'w-full text-left px-3 py-2.5 rounded-xl text-xs transition-all flex items-center justify-between gap-2 border bg-white border-transparent hover:bg-slate-100 text-slate-700 font-medium';
+          }
+        }
+      });
+
+      // Actualizar panel derecho
+      document.getElementById('badge-category').textContent = item.category;
+      document.getElementById('detail-number').textContent = `Identidad #${item.id}`;
+      document.getElementById('detail-cat').textContent = item.category;
+      document.getElementById('detail-title').textContent = item.title;
+      document.getElementById('detail-explanation').textContent = item.explanation;
+      document.getElementById('detail-physical').textContent = item.physical;
+
+      // Renderizar fórmula en KaTeX
+      const formulaEl = document.getElementById('detail-formula');
+      if (window.katex) {
+        katex.render(item.latex, formulaEl, { throwOnError: false, displayMode: true });
+      } else {
+        formulaEl.textContent = item.latex;
+      }
+
+      // Mostrar/ocultar slider Beta para Suma de Ángulos (#11)
+      const betaBox = document.getElementById('beta-control-box');
+      const betaHud = document.getElementById('hud-beta-badge');
+      if (id === 11) {
+        betaBox.classList.remove('hidden');
+        betaHud.classList.remove('hidden');
+      } else {
+        betaBox.classList.add('hidden');
+        betaHud.classList.add('hidden');
+      }
+
+      updateUI();
+      drawScene();
+    }
+
+    function setCanvasTheme(theme) {
+      state.theme = theme;
+      const wrapper = document.getElementById('canvas-wrapper');
+      const btnStraw = document.getElementById('btn-theme-straw');
+      const btnManim = document.getElementById('btn-theme-manim');
+
+      if (theme === 'straw') {
+        wrapper.classList.add('bg-straw-texture', 'border-straw-300');
+        wrapper.classList.remove('bg-slate-950', 'border-slate-700');
+        btnStraw.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-600 text-white shadow-sm flex items-center gap-1.5';
+        btnManim.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-700 hover:text-slate-900 flex items-center gap-1.5';
+      } else {
+        wrapper.classList.remove('bg-straw-texture', 'border-straw-300');
+        wrapper.classList.add('bg-slate-950', 'border-slate-700');
+        btnManim.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-sm flex items-center gap-1.5';
+        btnStraw.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-700 hover:text-slate-900 flex items-center gap-1.5';
+      }
+      drawScene();
+    }
+
+    function setTheta(deg) {
+      state.thetaDeg = deg;
+      document.getElementById('theta-slider').value = deg;
+      updateUI();
+      drawScene();
+    }
+
+    function togglePlay() {
+      state.isPlaying = !state.isPlaying;
+      const btn = document.getElementById('btn-play');
+      const icon = document.getElementById('play-icon');
+      const text = document.getElementById('play-text');
+
+      if (state.isPlaying) {
+        btn.classList.replace('bg-blue-600', 'bg-rose-600');
+        btn.classList.replace('hover:bg-blue-700', 'hover:bg-rose-700');
+        icon.textContent = '⏸';
+        text.textContent = 'Pausar';
+        state.lastTimestamp = performance.now();
+        state.animFrameId = requestAnimationFrame(animateLoop);
+      } else {
+        btn.classList.replace('bg-rose-600', 'bg-blue-600');
+        btn.classList.replace('hover:bg-rose-700', 'hover:bg-blue-700');
+        icon.textContent = '▶';
+        text.textContent = 'Animar';
+        if (state.animFrameId) cancelAnimationFrame(state.animFrameId);
+      }
+    }
+
+    function animateLoop(timestamp) {
+      if (!state.isPlaying) return;
+      const dt = (timestamp - state.lastTimestamp) / 1000;
+      state.lastTimestamp = timestamp;
+
+      // Velocidad suave: ~28 grados por segundo
+      state.thetaDeg = (state.thetaDeg + dt * 28) % 360;
+      document.getElementById('theta-slider').value = Math.round(state.thetaDeg);
+      updateUI();
+      drawScene();
+
+      state.animFrameId = requestAnimationFrame(animateLoop);
+    }
+
+    function updateUI() {
+      const deg = Math.round(state.thetaDeg);
+      const rad = (state.thetaDeg * Math.PI) / 180;
+      const betaRad = (state.betaDeg * Math.PI) / 180;
+
+      document.getElementById('hud-deg').textContent = `${deg}°`;
+      document.getElementById('hud-rad').textContent = `${rad.toFixed(2)} rad`;
+      document.getElementById('label-theta-val').textContent = `${deg}°`;
+      document.getElementById('hud-beta-deg').textContent = `${state.betaDeg}°`;
+      document.getElementById('label-beta-val').textContent = `${state.betaDeg}°`;
+
+      // Actualizar valores numéricos en vivo según la identidad
+      const cosT = Math.cos(rad);
+      const sinT = Math.sin(rad);
+      const tanT = Math.abs(cosT) < 1e-4 ? Infinity : Math.tan(rad);
+      const secT = Math.abs(cosT) < 1e-4 ? Infinity : 1 / cosT;
+      const cotT = Math.abs(sinT) < 1e-4 ? Infinity : 1 / sinT;
+      const cscT = Math.abs(sinT) < 1e-4 ? Infinity : 1 / sinT;
+
+      const fmt = (v) => !isFinite(v) || Math.abs(v) > 99 ? '∞' : v.toFixed(3);
+      const liveContainer = document.getElementById('live-values');
+
+      let html = `
+        <div class="p-2 rounded bg-white border border-slate-200">
+          <span class="text-blue-600 font-bold">cos(θ):</span> ${fmt(cosT)}
+        </div>
+        <div class="p-2 rounded bg-white border border-slate-200">
+          <span class="text-emerald-600 font-bold">sen(θ):</span> ${fmt(sinT)}
+        </div>
+      `;
+
+      switch (state.selectedId) {
+        case 1:
+        case 2:
+          html += `
+            <div class="col-span-2 p-2 rounded bg-amber-50 border border-amber-200 text-amber-950">
+              <strong>cos²θ + sen²θ:</strong> ${(cosT * cosT).toFixed(3)} + ${(sinT * sinT).toFixed(3)} = <strong>${(cosT * cosT + sinT * sinT).toFixed(3)}</strong>
+            </div>`;
+          break;
+        case 3:
+          html += `
+            <div class="p-2 rounded bg-white border border-slate-200"><span class="text-orange-600 font-bold">tan(θ):</span> ${fmt(tanT)}</div>
+            <div class="p-2 rounded bg-white border border-slate-200"><span class="text-red-600 font-bold">sec(θ):</span> ${fmt(secT)}</div>
+            <div class="col-span-2 p-2 rounded bg-amber-50 border border-amber-200 text-amber-950">
+              <strong>1 + tan²θ = sec²θ:</strong> ${isFinite(tanT) && Math.abs(tanT) < 50 ? (1 + tanT * tanT).toFixed(2) + ' = ' + (secT * secT).toFixed(2) : 'Asíntota (90°/270°)'}
+            </div>`;
+          break;
+        case 4:
+          html += `
+            <div class="p-2 rounded bg-white border border-slate-200"><span class="text-orange-600 font-bold">cot(θ):</span> ${fmt(cotT)}</div>
+            <div class="p-2 rounded bg-white border border-slate-200"><span class="text-red-600 font-bold">csc(θ):</span> ${fmt(cscT)}</div>
+            <div class="col-span-2 p-2 rounded bg-amber-50 border border-amber-200 text-amber-950">
+              <strong>1 + cot²θ = csc²θ:</strong> ${isFinite(cotT) && Math.abs(cotT) < 50 ? (1 + cotT * cotT).toFixed(2) + ' = ' + (cscT * cscT).toFixed(2) : 'Asíntota (0°/180°)'}
+            </div>`;
+          break;
+        case 5:
+          html += `
+            <div class="col-span-2 p-2 rounded bg-blue-50 border border-blue-200 text-blue-950">
+              <strong>cos(-${deg}°) = cos(${deg}°):</strong> ${fmt(Math.cos(-rad))} = ${fmt(cosT)}
+            </div>`;
+          break;
+        case 6:
+          html += `
+            <div class="col-span-2 p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-950">
+              <strong>sen(-${deg}°) = -sen(${deg}°):</strong> ${fmt(Math.sin(-rad))} = ${fmt(-sinT)}
+            </div>`;
+          break;
+        case 7:
+          html += `
+            <div class="col-span-2 p-2 rounded bg-orange-50 border border-orange-200 text-orange-950">
+              <strong>tan(-${deg}°) = -tan(${deg}°):</strong> ${fmt(-tanT)} = ${fmt(-tanT)}
+            </div>`;
+          break;
+        case 8:
+          html += `
+            <div class="col-span-2 p-2 rounded bg-purple-50 border border-purple-200 text-purple-950">
+              <strong>sen(90° - ${deg}°) = cos(${deg}°):</strong> ${fmt(Math.sin(Math.PI / 2 - rad))} = ${fmt(cosT)}
+            </div>`;
+          break;
+        case 9:
+          html += `
+            <div class="col-span-2 p-2 rounded bg-purple-50 border border-purple-200 text-purple-950">
+              <strong>cos(90° - ${deg}°) = sen(${deg}°):</strong> ${fmt(Math.cos(Math.PI / 2 - rad))} = ${fmt(sinT)}
+            </div>`;
+          break;
+        case 10:
+          html += `
+            <div class="p-2 rounded bg-purple-50 border border-purple-200 text-purple-950"><strong>sen(180°-θ):</strong> ${fmt(Math.sin(Math.PI - rad))}</div>
+            <div class="p-2 rounded bg-purple-50 border border-purple-200 text-purple-950"><strong>cos(180°-θ):</strong> ${fmt(Math.cos(Math.PI - rad))}</div>`;
+          break;
+        case 11:
+          const sumSin = Math.sin(rad + betaRad);
+          const expanded = sinT * Math.cos(betaRad) + cosT * Math.sin(betaRad);
+          html += `
+            <div class="col-span-2 p-2 rounded bg-purple-50 border border-purple-200 text-purple-950">
+              <strong>sen(${deg}° + ${state.betaDeg}°):</strong> ${sumSin.toFixed(3)} <br/>
+              <span class="text-[11px]">sen α cos β + cos α sen β = ${(sinT * Math.cos(betaRad)).toFixed(3)} + ${(cosT * Math.sin(betaRad)).toFixed(3)} = <strong>${expanded.toFixed(3)}</strong></span>
+            </div>`;
+          break;
+        case 12:
+          html += `
+            <div class="p-2 rounded bg-purple-50 border border-purple-200 text-purple-950"><strong>sen(2θ):</strong> ${Math.sin(2 * rad).toFixed(3)}</div>
+            <div class="p-2 rounded bg-purple-50 border border-purple-200 text-purple-950"><strong>cos(2θ):</strong> ${Math.cos(2 * rad).toFixed(3)}</div>`;
+          break;
+      }
+
+      liveContainer.innerHTML = html;
+    }
+
+    // =========================================================================
+    // 5. MOTOR DE RENDERIZADO DEL CANVAS (HILOS, CHINCHES Y PROYECCIONES)
+    // =========================================================================
+    function resizeCanvas() {
+      const wrapper = document.getElementById('canvas-wrapper');
+      const rect = wrapper.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawScene();
+    }
+
+    function drawScene() {
+      const w = canvas.width / (window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio || 1);
+      const cx = w / 2;
+      const cy = h / 2;
+      // Escala dinámica: R = 1 corresponde al 31% del ancho para dar margen a tangentes y secantes
+      const R = Math.min(w, h) * 0.31;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const isStraw = state.theme === 'straw';
+      const axisColor = isStraw ? 'rgba(74, 49, 20, 0.45)' : 'rgba(148, 163, 184, 0.35)';
+      const gridColor = isStraw ? 'rgba(138, 93, 37, 0.12)' : 'rgba(148, 163, 184, 0.08)';
+      const circleStroke = isStraw ? '#4a3114' : '#e2e8f0';
+      const labelColor = isStraw ? '#3b240b' : '#f8fafc';
+
+      // Helper para convertir coordenadas matemáticas (x, y) a píxeles de pantalla
+      const toPx = (x, y) => ({ x: cx + x * R, y: cy - y * R });
+
+      // 1. Cuadrícula de referencia suave
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      const step = R / 2;
+      for (let gx = cx % step; gx < w; gx += step) {
+        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+      }
+      for (let gy = cy % step; gy < h; gy += step) {
+        ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+      }
+
+      // 2. Ejes Cartesianos X e Y
+      ctx.strokeStyle = axisColor;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(16, cy); ctx.lineTo(w - 16, cy);
+      ctx.moveTo(cx, 16); ctx.lineTo(cx, h - 16);
+      ctx.stroke();
+
+      // Etiquetas de ejes
+      ctx.fillStyle = labelColor;
+      ctx.font = '600 11px Inter, sans-serif';
+      ctx.fillText('X (cos)', w - 52, cy - 6);
+      ctx.fillText('Y (sen)', cx + 8, 28);
+
+      // 3. Círculo Unitario Principal
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      if (!isStraw) {
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+        ctx.fill();
+      }
+      ctx.strokeStyle = circleStroke;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Marcas de chinches notables alrededor del perímetro (cada 30°)
+      for (let a = 0; a < 360; a += 30) {
+        const ar = (a * Math.PI) / 180;
+        const pt = toPx(Math.cos(ar), Math.sin(ar));
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = isStraw ? 'rgba(120, 53, 15, 0.45)' : 'rgba(148, 163, 184, 0.5)';
+        ctx.fill();
+      }
+
+      // Cálculos trigonométricos principales
+      const theta = (state.thetaDeg * Math.PI) / 180;
+      const cosT = Math.cos(theta);
+      const sinT = Math.sin(theta);
+
+      const O = toPx(0, 0);
+      const P = toPx(cosT, sinT);
+      const Px = toPx(cosT, 0);
+
+      // Helper para dibujar un "Hilo Tenso" con sombra realista
+      const drawThread = (p1, p2, color, width = 3.5, dashed = false) => {
+        ctx.save();
+        if (dashed) ctx.setLineDash([6, 4]);
+        // Sombra sutil del hilo sobre el cartón
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+        ctx.shadowBlur = 4;
+        ctx.shadowOffsetX = 1.5;
+        ctx.shadowOffsetY = 2;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+        ctx.restore();
+      };
+
+      // Helper para dibujar un "Chinche / Pin"
+      const drawPin = (pt, fill = '#dc2626', radius = 6) => {
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.4)';
+        ctx.shadowBlur = 4;
+        ctx.shadowOffsetY = 2;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = fill;
+        ctx.fill();
+        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+        // Brillo metálico del chinche
+        ctx.beginPath();
+        ctx.arc(pt.x - radius * 0.28, pt.y - radius * 0.28, radius * 0.28, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.fill();
+        ctx.restore();
+      };
+
+      // Helper para dibujar el arco angular
+      const drawAngleArc = (angleRad, radiusPx, color, label) => {
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        if (angleRad >= 0) {
+          ctx.arc(cx, cy, radiusPx, 0, -angleRad, true);
+        } else {
+          ctx.arc(cx, cy, radiusPx, 0, -angleRad, false);
+        }
+        ctx.stroke();
+        if (label) {
+          const mid = angleRad / 2;
+          const lx = cx + (radiusPx + 14) * Math.cos(mid);
+          const ly = cy - (radiusPx + 14) * Math.sin(mid);
+          ctx.fillStyle = color;
+          ctx.font = 'bold 12px Inter, sans-serif';
+          ctx.fillText(label, lx - 5, ly + 4);
+        }
+        ctx.restore();
+      };
+
+      // Helper para etiqueta flotante legible
+      const drawTag = (pt, text, bgColor, textColor = '#ffffff') => {
+        ctx.save();
+        ctx.font = 'bold 11px JetBrains Mono, monospace';
+        const metrics = ctx.measureText(text);
+        const padX = 6;
+        const boxW = metrics.width + padX * 2;
+        const boxH = 18;
+        ctx.fillStyle = bgColor;
+        ctx.beginPath();
+        ctx.roundRect(pt.x - boxW / 2, pt.y - boxH / 2, boxW, boxH, 5);
+        ctx.fill();
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, pt.x, pt.y + 0.5);
+        ctx.restore();
+      };
+
+      // =======================================================================
+      // RENDERIZADO ESPECÍFICO SEGÚN LA IDENTIDAD SELECCIONADA (1 a 12)
+      // =======================================================================
+      const id = state.selectedId;
+
+      if (id === 1 || id === 2) {
+        // 1. Parametrización Polar & 2. Identidad Pitagórica
+        if (id === 2) {
+          // Relleno semitransparente del triángulo rectángulo pitagórico
+          ctx.fillStyle = isStraw ? 'rgba(234, 179, 8, 0.18)' : 'rgba(250, 204, 21, 0.16)';
+          ctx.beginPath();
+          ctx.moveTo(O.x, O.y);
+          ctx.lineTo(Px.x, Px.y);
+          ctx.lineTo(P.x, P.y);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        drawAngleArc(theta, 28, '#ef4444', 'θ');
+        drawThread(O, Px, '#2563eb', 4);          // Hilo Azul: Coseno
+        drawThread(Px, P, '#16a34a', 4);          // Hilo Verde: Seno
+        drawThread(O, P, '#eab308', 4);           // Hilo Amarillo: Radio = 1
+
+        drawPin(Px, '#1e293b', 4.5);
+        drawPin(O, '#dc2626', 6.5);
+        drawPin(P, '#f59e0b', 6.5);
+
+        drawTag({ x: (O.x + Px.x) / 2, y: O.y + (sinT >= 0 ? 15 : -15) }, 'cos θ', '#1d4ed8');
+        drawTag({ x: Px.x + (cosT >= 0 ? 26 : -26), y: (Px.y + P.y) / 2 }, 'sen θ', '#15803d');
+        if (id === 2) {
+          drawTag({ x: (O.x + P.x) / 2 - 12, y: (O.y + P.y) / 2 - 12 }, 'r = 1', '#b45309');
+        } else {
+          drawTag({ x: P.x + (cosT >= 0 ? 22 : -22), y: P.y - 16 }, 'P(cos θ, sen θ)', '#0f172a');
+        }
+      }
+
+      else if (id === 3) {
+        // 3. Tangente y Secante: 1 + tan²θ = sec²θ
+        const p10 = toPx(1, 0);
+        // Línea guía tangente vertical en x = 1
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = isStraw ? '#78350f' : '#94a3b8';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(p10.x, 12);
+        ctx.lineTo(p10.x, h - 12);
+        ctx.stroke();
+        ctx.restore();
+
+        drawAngleArc(theta, 26, '#ef4444', 'θ');
+        // Base unitaria (1)
+        drawThread(O, p10, isStraw ? '#1e293b' : '#f8fafc', 3.5);
+
+        if (Math.abs(cosT) > 0.12) {
+          const tanVal = Math.tan(theta);
+          // Limitar visualmente dentro del canvas
+          const clampedTan = Math.max(-2.2, Math.min(2.2, tanVal));
+          const pTan = toPx(1, clampedTan);
+
+          // Triángulo externo sombreado
+          ctx.fillStyle = 'rgba(249, 115, 22, 0.14)';
+          ctx.beginPath();
+          ctx.moveTo(O.x, O.y);
+          ctx.lineTo(p10.x, p10.y);
+          ctx.lineTo(pTan.x, pTan.y);
+          ctx.closePath();
+          ctx.fill();
+
+          drawThread(p10, pTan, '#ea580c', 4.5); // Naranja: Tangente
+          drawThread(O, pTan, '#dc2626', 3.5);   // Rojo: Secante
+          drawPin(pTan, '#ea580c', 6);
+          drawTag({ x: p10.x + 28, y: (p10.y + pTan.y) / 2 }, 'tan θ', '#c2410c');
+          drawTag({ x: (O.x + pTan.x) / 2 - 14, y: (O.y + pTan.y) / 2 - 12 }, 'sec θ', '#b91c1c');
+        }
+
+        drawPin(p10, '#1e293b', 5);
+        drawPin(O, '#dc2626', 6.5);
+        drawPin(P, '#eab308', 5);
+      }
+
+      else if (id === 4) {
+        // 4. Cotangente y Cosecante: 1 + cot²θ = csc²θ
+        const p01 = toPx(0, 1);
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = isStraw ? '#78350f' : '#94a3b8';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(12, p01.y);
+        ctx.lineTo(w - 12, p01.y);
+        ctx.stroke();
+        ctx.restore();
+
+        drawAngleArc(theta, 26, '#ef4444', 'θ');
+        drawThread(O, p01, isStraw ? '#1e293b' : '#f8fafc', 3.5);
+
+        if (Math.abs(sinT) > 0.12) {
+          const cotVal = 1 / Math.tan(theta);
+          const clampedCot = Math.max(-2.2, Math.min(2.2, cotVal));
+          const pCot = toPx(clampedCot, 1);
+
+          ctx.fillStyle = 'rgba(249, 115, 22, 0.14)';
+          ctx.beginPath();
+          ctx.moveTo(O.x, O.y);
+          ctx.lineTo(p01.x, p01.y);
+          ctx.lineTo(pCot.x, pCot.y);
+          ctx.closePath();
+          ctx.fill();
+
+          drawThread(p01, pCot, '#ea580c', 4.5); // Naranja: Cotangente
+          drawThread(O, pCot, '#dc2626', 3.5);   // Rojo: Cosecante
+          drawPin(pCot, '#ea580c', 6);
+          drawTag({ x: (p01.x + pCot.x) / 2, y: p01.y - 16 }, 'cot θ', '#c2410c');
+          drawTag({ x: (O.x + pCot.x) / 2 + 16, y: (O.y + pCot.y) / 2 }, 'csc θ', '#b91c1c');
+        }
+
+        drawPin(p01, '#1e293b', 5);
+        drawPin(O, '#dc2626', 6.5);
+        drawPin(P, '#eab308', 5);
+      }
+
+      else if (id === 5 || id === 6 || id === 7) {
+        // 5, 6, 7. Paridad: +θ vs -θ
+        const Pneg = toPx(cosT, -sinT);
+        drawAngleArc(theta, 26, '#eab308', '+θ');
+        drawAngleArc(-theta, 22, '#a855f7', '-θ');
+
+        // Hilo común azul (Coseno)
+        drawThread(O, Px, '#2563eb', 4.5);
+        // Proyecciones verticales opuestas
+        drawThread(Px, P, '#16a34a', 3.5);
+        drawThread(Px, Pneg, '#f97316', 3.5);
+        // Radios
+        drawThread(O, P, '#eab308', 3.5);
+        drawThread(O, Pneg, '#a855f7', 3.5);
+
+        if (id === 7 && Math.abs(cosT) > 0.18) {
+          const p10 = toPx(1, 0);
+          const tVal = Math.max(-1.8, Math.min(1.8, Math.tan(theta)));
+          const pTanPos = toPx(1, tVal);
+          const pTanNeg = toPx(1, -tVal);
+          drawThread(P, pTanPos, '#eab308', 1.8, true);
+          drawThread(Pneg, pTanNeg, '#a855f7', 1.8, true);
+          drawThread(p10, pTanPos, '#16a34a', 4);
+          drawThread(p10, pTanNeg, '#f97316', 4);
+          drawPin(pTanPos, '#16a34a', 5);
+          drawPin(pTanNeg, '#f97316', 5);
+        }
+
+        drawPin(O, '#dc2626', 6.5);
+        drawPin(P, '#eab308', 6);
+        drawPin(Pneg, '#a855f7', 6);
+
+        drawTag({ x: (O.x + Px.x) / 2, y: O.y + 15 }, 'cos(-θ) = cos(θ)', '#1d4ed8');
+        if (id === 6) {
+          drawTag({ x: Px.x + (cosT >= 0 ? 32 : -32), y: (Px.y + P.y) / 2 }, '+sen θ', '#15803d');
+          drawTag({ x: Px.x + (cosT >= 0 ? 32 : -32), y: (Px.y + Pneg.y) / 2 }, '-sen θ', '#c2410c');
+        }
+      }
+
+      else if (id === 8 || id === 9) {
+        // 8 y 9. Ángulos Complementarios: π/2 - θ
+        const comp = Math.PI / 2 - theta;
+        const Pcomp = toPx(Math.cos(comp), Math.sin(comp));
+        const PcompX = toPx(Math.cos(comp), 0);
+
+        // Diagonal y = x como eje de simetría
+        const d1 = toPx(-1.1, -1.1);
+        const d2 = toPx(1.1, 1.1);
+        drawThread(d1, d2, isStraw ? 'rgba(120,53,15,0.35)' : 'rgba(148,163,184,0.35)', 1.5, true);
+
+        // Triángulo original θ
+        drawThread(O, Px, '#2563eb', 4);
+        drawThread(Px, P, '#16a34a', 4);
+        drawThread(O, P, '#eab308', 3.5);
+
+        // Triángulo complementario (90° - θ)
+        drawThread(O, PcompX, '#9333ea', 3.5, true);
+        drawThread(PcompX, Pcomp, '#ea580c', 3.5, true);
+        drawThread(O, Pcomp, '#ec4899', 3.5);
+
+        drawPin(O, '#dc2626', 6.5);
+        drawPin(P, '#eab308', 6);
+        drawPin(Pcomp, '#ec4899', 6);
+
+        if (id === 8) {
+          drawTag({ x: PcompX.x + 38, y: (PcompX.y + Pcomp.y) / 2 }, 'sen(90°-θ)', '#c2410c');
+          drawTag({ x: (O.x + Px.x) / 2, y: O.y + 16 }, 'cos(θ)', '#1d4ed8');
+        } else {
+          drawTag({ x: (O.x + PcompX.x) / 2, y: O.y + 16 }, 'cos(90°-θ)', '#7e22ce');
+          drawTag({ x: Px.x + 28, y: (Px.y + P.y) / 2 }, 'sen(θ)', '#15803d');
+        }
+      }
+
+      else if (id === 10) {
+        // 10. Suplementarios: π - θ
+        const sup = Math.PI - theta;
+        const Psup = toPx(Math.cos(sup), Math.sin(sup));
+        const PsupX = toPx(Math.cos(sup), 0);
+
+        // Cuerda horizontal conectando P(θ) y P(π - θ)
+        drawThread(P, Psup, '#a855f7', 2.5, true);
+
+        // Triángulo original
+        drawThread(O, Px, '#2563eb', 4);
+        drawThread(Px, P, '#16a34a', 4);
+        drawThread(O, P, '#eab308', 3.5);
+
+        // Triángulo suplementario
+        drawThread(O, PsupX, '#f97316', 4);
+        drawThread(PsupX, Psup, '#16a34a', 4);
+        drawThread(O, Psup, '#ec4899', 3.5);
+
+        drawPin(O, '#dc2626', 6.5);
+        drawPin(P, '#eab308', 6);
+        drawPin(Psup, '#ec4899', 6);
+
+        drawTag({ x: Px.x + 24, y: (Px.y + P.y) / 2 }, 'sen θ', '#15803d');
+        drawTag({ x: PsupX.x - 32, y: (PsupX.y + Psup.y) / 2 }, 'sen(π-θ)', '#15803d');
+      }
+
+      else if (id === 11) {
+        // 11. Suma de Ángulos: sen(α + β)
+        const alpha = theta;
+        const beta = (state.betaDeg * Math.PI) / 180;
+        const total = alpha + beta;
+
+        const Psum = toPx(Math.cos(total), Math.sin(total));
+        const PsumX = toPx(Math.cos(total), 0);
+
+        // Pie de la perpendicular desde P(α + β) sobre el rayo de ángulo α
+        const cosB = Math.cos(beta);
+        const Q = toPx(cosB * Math.cos(alpha), cosB * Math.sin(alpha));
+        const Qx = toPx(cosB * Math.cos(alpha), 0);
+        const Rhoriz = toPx(Math.cos(total), Q.y === cy ? 0 : (cy - Q.y) / R);
+
+        drawAngleArc(alpha, 24, '#eab308', 'α');
+        drawAngleArc(total, 36, '#a855f7', 'α+β');
+
+        // Rayo base α
+        drawThread(O, P, '#eab308', 2.5, true);
+        // Rayo suma α + β
+        drawThread(O, Psum, '#a855f7', 4);
+        // Perpendicular interna formando el triángulo superior
+        drawThread(Psum, Q, '#f97316', 3.5);
+        // Altura total sen(α + β) dividida en 2 tramos
+        drawThread(PsumX, Rhoriz, '#2563eb', 4.5); // Tramo inferior: sen(α)cos(β)
+        drawThread(Rhoriz, Psum, '#16a34a', 4.5); // Tramo superior: cos(α)sen(β)
+        drawThread(Q, Rhoriz, '#64748b', 1.8, true);
+
+        drawPin(O, '#dc2626', 6.5);
+        drawPin(Q, '#f97316', 5);
+        drawPin(Psum, '#a855f7', 6.5);
+
+        drawTag({ x: PsumX.x - 42, y: (PsumX.y + Rhoriz.y) / 2 }, 'sen α cos β', '#1d4ed8');
+        drawTag({ x: PsumX.x - 42, y: (Rhoriz.y + Psum.y) / 2 }, 'cos α sen β', '#15803d');
+      }
+
+      else if (id === 12) {
+        // 12. Ángulo Doble: sen(2θ) y cos(2θ)
+        const doubleT = 2 * theta;
+        const P2 = toPx(Math.cos(doubleT), Math.sin(doubleT));
+        const P2x = toPx(Math.cos(doubleT), 0);
+        const P10 = toPx(1, 0);
+
+        drawAngleArc(theta, 24, '#eab308', 'θ');
+        drawAngleArc(doubleT, 36, '#a855f7', '2θ');
+
+        // Cuerda desde (1,0) hasta P(2θ) bisecada por el radio en θ
+        drawThread(P10, P2, '#f97316', 3, true);
+        // Radio bisector en θ
+        drawThread(O, P, '#eab308', 3.5);
+        // Triángulo del ángulo doble 2θ
+        drawThread(O, P2x, '#2563eb', 4.5); // cos(2θ)
+        drawThread(P2x, P2, '#16a34a', 4.5); // sen(2θ)
+        drawThread(O, P2, '#a855f7', 4);
+
+        drawPin(O, '#dc2626', 6.5);
+        drawPin(P, '#eab308', 5.5);
+        drawPin(P2, '#a855f7', 6.5);
+
+        drawTag({ x: (O.x + P2x.x) / 2, y: O.y + 16 }, 'cos(2θ)', '#1d4ed8');
+        drawTag({ x: P2x.x + 28, y: (P2x.y + P2.y) / 2 }, 'sen(2θ)', '#15803d');
+      }
+    }
+
+    // =========================================================================
+    // 6. INTERACCIÓN CON PUNTERO EN EL CANVAS (ARRASTRAR CHINCHE EN EL CÍRCULO)
+    // =========================================================================
+    function setupCanvasPointerInteraction() {
+      let dragging = false;
+
+      const updateAngleFromEvent = (clientX, clientY) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = clientX - rect.left - rect.width / 2;
+        const y = -(clientY - rect.top - rect.height / 2);
+        let deg = (Math.atan2(y, x) * 180) / Math.PI;
+        if (deg < 0) deg += 360;
+        state.thetaDeg = Math.round(deg);
+        document.getElementById('theta-slider').value = state.thetaDeg;
+        updateUI();
+        drawScene();
+      };
+
+      canvas.addEventListener('mousedown', (e) => {
+        dragging = true;
+        if (state.isPlaying) togglePlay();
+        updateAngleFromEvent(e.clientX, e.clientY);
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (dragging) updateAngleFromEvent(e.clientX, e.clientY);
+      });
+      window.addEventListener('mouseup', () => { dragging = false; });
+
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          dragging = true;
+          if (state.isPlaying) togglePlay();
+          updateAngleFromEvent(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+      canvas.addEventListener('touchmove', (e) => {
+        if (dragging && e.touches.length === 1) {
+          updateAngleFromEvent(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+      window.addEventListener('touchend', () => { dragging = false; });
+    }
+
+    // =========================================================================
+    // 7. CHECKLIST INTERACTIVO DE MATERIALES (LOCALSTORAGE)
+    // =========================================================================
+    function getSavedChecklist() {
+      try {
+        return JSON.parse(localStorage.getItem('circulo_unitario_checklist') || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveChecklist(data) {
+      try {
+        localStorage.setItem('circulo_unitario_checklist', JSON.stringify(data));
+      } catch (e) {}
+    }
+
+    function renderChecklist() {
+      const saved = getSavedChecklist();
+      const grid = document.getElementById('materials-grid');
+      let completedCount = 0;
+
+      grid.innerHTML = CHECKLIST_ITEMS.map(item => {
+        const checked = !!saved[item.id];
+        if (checked) completedCount++;
+        return `
+          <label class="flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
+            checked 
+              ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950' 
+              : 'bg-slate-50 hover:bg-amber-50/60 border-slate-200 text-slate-800'
+          }">
+            <input 
+              type="checkbox" 
+              ${checked ? 'checked' : ''} 
+              onchange="toggleChecklistItem('${item.id}')"
+              class="mt-0.5 w-4 h-4 rounded text-amber-600 focus:ring-amber-500 border-slate-300"
+            />
+            <div class="text-xs leading-snug">
+              <span class="inline-block px-1.5 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-500 mb-1">${item.tag}</span>
+              <span class="block font-semibold ${checked ? 'line-through opacity-75' : ''}">${item.text}</span>
+            </div>
+          </label>
+        `;
+      }).join('');
+
+      const pct = Math.round((completedCount / CHECKLIST_ITEMS.length) * 100);
+      document.getElementById('checklist-percent').textContent = `${pct}%`;
+      document.getElementById('checklist-bar').style.width = `${pct}%`;
+    }
+
+    function toggleChecklistItem(id) {
+      const saved = getSavedChecklist();
+      saved[id] = !saved[id];
+      saveChecklist(saved);
+      renderChecklist();
+    }
+
+    function resetChecklist() {
+      saveChecklist({});
+      renderChecklist();
+    }
+
+    function toggleGithubSteps() {
+      const el = document.getElementById('gh-steps-container');
+      el.classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>
