@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Círculo Unitario & Taller Táctico | Identidades Trigonométricas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- KaTeX CSS & JS + Auto-Render Extension -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --base-scale: 1;
+    }
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+    }
+    html.projector-xl {
+      font-size: 20px;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Custom range slider */
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      height: 10px;
+      border-radius: 999px;
+      background: #cbd5e1;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      margin-top: -7px;
+      background-color: #f59e0b;
+      height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      border: 3px solid #ffffff;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+      transition: transform 0.12s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    .tab-active {
+      background-color: #0f172a;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+    }
+    .identity-card-active {
+      border-color: #f59e0b;
+      background-color: #fffbeb;
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.18);
+    }
+    canvas {
+      touch-action: none;
+    }
+    .katex {
+      font-size: 1.08em;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="sticky top-0 z-40 bg-slate-950/95 backdrop-blur border-b border-slate-800 text-white shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg">
+          θ
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg sm:text-xl tracking-tight leading-tight">
+            Identidades Trigonométricas
+          </h1>
+          <p class="text-xs sm:text-sm text-amber-300 font-medium">
+            Laboratorio Interactivo &amp; Taller Táctico en Vivo
+          </p>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs + Projector Mode -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+        <nav class="flex items-center gap-1.5 bg-slate-900 p-1.5 rounded-2xl border border-slate-800">
+          <button id="nav-sim" onclick="switchSection('simulator')" class="px-4 py-2 rounded-xl text-sm sm:text-base font-bold transition-all bg-amber-500 text-slate-950 shadow">
+            📐 Laboratorio (12 Identidades)
+          </button>
+          <button id="nav-taller" onclick="switchSection('taller')" class="px-4 py-2 rounded-xl text-sm sm:text-base font-bold text-slate-300 hover:text-white transition-all">
+            ⚽ Taller: El Gol Trigonométrico
+          </button>
+        </nav>
+
+        <button id="projector-btn" onclick="toggleProjectorMode()" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-400/40 shadow transition flex items-center gap-1.5" title="Aumenta el tamaño de letra para proyectar en clase">
+          <span>🔍 Modo Proyector (Texto XL)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO CONCEPT BANNER ==================== -->
+  <section class="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-slate-100 border-b border-slate-700/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      <div class="max-w-4xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs sm:text-sm font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30 mb-2">
+          <span>✨ Enseñanza de la Matemática • Visualización Geométrica</span>
+        </div>
+        <p class="text-base sm:text-lg text-slate-200 leading-relaxed">
+          Un vector de radio unitario ($r = 1$) proyecta sus sombras ortogonales sobre los ejes coordenados como $(\cos\theta, \operatorname{sen}\theta)$. Explora las <strong>12 demostraciones interactivas</strong> o resuelve la jugada estratégica en el <strong>Taller del Gol Trigonométrico</strong>.
+        </p>
+      </div>
+      <div class="shrink-0">
+        <button onclick="switchSection('taller')" class="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm sm:text-base shadow-lg transition">
+          Ir al Taller de Fútbol ⚽ →
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MAIN WORKSPACE ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 1: INTERACTIVE UNIT CIRCLE SIMULATOR (12 IDENTITIES)              -->
+    <!-- ========================================================================= -->
+    <div id="section-simulator" class="space-y-6">
+      
+      <!-- Category Filter Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex flex-wrap gap-2" id="category-filters">
+          <button onclick="filterIdentities('all')" data-cat="all" class="cat-btn tab-active px-3.5 py-2 rounded-xl text-sm font-bold transition">Todas (12)</button>
+          <button onclick="filterIdentities('fundamentos')" data-cat="fundamentos" class="cat-btn px-3.5 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition">1. Fundamentos</button>
+          <button onclick="filterIdentities('pitagoricas')" data-cat="pitagoricas" class="cat-btn px-3.5 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition">2. Pitagóricas</button>
+          <button onclick="filterIdentities('paridad')" data-cat="paridad" class="cat-btn px-3.5 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition">3. Paridad (−θ)</button>
+          <button onclick="filterIdentities('complementarios')" data-cat="complementarios" class="cat-btn px-3.5 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition">4. Complementarios</button>
+          <button onclick="filterIdentities('suplementarios')" data-cat="suplementarios" class="cat-btn px-3.5 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition">5. Suplementarios</button>
+          <button onclick="filterIdentities('compuestos')" data-cat="compuestos" class="cat-btn px-3.5 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition">6. Ángulo Doble y Suma</button>
+        </div>
+      </div>
+
+      <!-- Main Grid: Identity List (Left) + Canvas & Geometric Proof (Right) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left Column: Selector of 12 Identities -->
+        <div class="lg:col-span-4 bg-white rounded-3xl shadow-sm border border-slate-200 p-4 max-h-[760px] overflow-y-auto space-y-3" id="identities-list">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Right Column: Interactive Canvas, Sliders & Full Proof -->
+        <div class="lg:col-span-8 space-y-5">
+          
+          <!-- Canvas Simulation Card -->
+          <div class="bg-white rounded-3xl shadow-md border border-slate-200 overflow-hidden">
+            <!-- Header with KaTeX Formula -->
+            <div class="p-5 sm:p-6 border-b border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span id="active-badge" class="inline-block px-3 py-1 rounded-lg text-xs font-extrabold uppercase tracking-wider bg-amber-100 text-amber-900 mb-1.5">
+                  Identidad Pitagórica
+                </span>
+                <h2 id="active-title" class="text-xl sm:text-2xl font-black text-slate-900">
+                  2. Identidad Pitagórica Fundamental
+                </h2>
+              </div>
+              <div id="active-formula-katex" class="text-xl sm:text-2xl bg-white px-5 py-3 rounded-2xl border-2 border-slate-200 shadow-sm self-start sm:self-center">
+                <!-- KaTeX rendered formula -->
+              </div>
+            </div>
+
+            <!-- High-Contrast Manim-Style Dark Canvas -->
+            <div class="relative w-full flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-950">
+              <canvas id="unitCircleCanvas" width="760" height="520" class="w-full max-w-[760px] h-auto rounded-2xl border border-slate-800 cursor-grab active:cursor-grabbing shadow-2xl"></canvas>
+              <div class="mt-3 flex flex-wrap items-center justify-center gap-5 text-sm text-slate-300 font-medium">
+                <span class="flex items-center gap-2"><span class="w-3.5 h-3.5 rounded-full bg-red-500 inline-block border-2 border-white"></span> Origen $(0,0)$</span>
+                <span class="flex items-center gap-2"><span class="w-3.5 h-3.5 rounded-full bg-amber-400 inline-block border-2 border-white"></span> Punto Móvil $P(\theta)$ (Arrástralo)</span>
+                <span class="flex items-center gap-2"><span class="w-5 h-1.5 bg-blue-500 inline-block rounded"></span> Coseno ($x$)</span>
+                <span class="flex items-center gap-2"><span class="w-5 h-1.5 bg-emerald-400 inline-block rounded"></span> Seno ($y$)</span>
+              </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="p-5 sm:p-6 bg-white border-t border-slate-200 space-y-5">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                <!-- Slider Theta -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                  <div class="flex justify-between items-center mb-2">
+                    <label for="theta-slider" class="text-sm font-extrabold text-slate-800 uppercase tracking-wide">
+                      Ángulo Principal ($\theta$):
+                    </label>
+                    <span id="theta-readout" class="font-mono-code text-base font-extrabold text-amber-800 bg-amber-100 px-3 py-1 rounded-lg">
+                      35° (0.61 rad)
+                    </span>
+                  </div>
+                  <input id="theta-slider" type="range" min="0" max="360" step="1" value="35" class="w-full" />
+                  <div class="flex flex-wrap justify-between gap-1 text-xs sm:text-sm font-bold text-slate-600 font-mono-code mt-2">
+                    <button onclick="setTheta(0)" class="px-1.5 py-0.5 rounded hover:bg-slate-200 hover:text-slate-950">0°</button>
+                    <button onclick="setTheta(30)" class="px-1.5 py-0.5 rounded hover:bg-slate-200 hover:text-slate-950">30°</button>
+                    <button onclick="setTheta(45)" class="px-1.5 py-0.5 rounded hover:bg-slate-200 hover:text-slate-950">45°</button>
+                    <button onclick="setTheta(60)" class="px-1.5 py-0.5 rounded hover:bg-slate-200 hover:text-slate-950">60°</button>
+                    <button onclick="setTheta(90)" class="px-1.5 py-0.5 rounded hover:bg-slate-200 hover:text-slate-950">90°</button>
+                    <button onclick="setTheta(135)" class="px-1.5 py-0.5 rounded hover:bg-slate-200 hover:text-slate-950">135°</button>
+                    <button onclick="setTheta(210)" class="px-1.5 py-0.5 rounded hover:bg-slate-200 hover:text-slate-950">210°</button>
+                    <button onclick="setTheta(315)" class="px-1.5 py-0.5 rounded hover:bg-slate-200 hover:text-slate-950">315°</button>
+                  </div>
+                </div>
+
+                <!-- Slider Beta (For angle addition) -->
+                <div id="beta-control-box" class="hidden bg-purple-50 p-4 rounded-2xl border border-purple-200">
+                  <div class="flex justify-between items-center mb-2">
+                    <label for="beta-slider" class="text-sm font-extrabold text-purple-950 uppercase tracking-wide">
+                      Segundo Ángulo ($\beta$):
+                    </label>
+                    <span id="beta-readout" class="font-mono-code text-base font-extrabold text-purple-900 bg-purple-200 px-3 py-1 rounded-lg">
+                      25°
+                    </span>
+                  </div>
+                  <input id="beta-slider" type="range" min="5" max="75" step="1" value="25" class="w-full" />
+                  <p class="text-xs sm:text-sm text-purple-800 mt-2 font-medium">Ajusta $\beta$ para visualizar $\theta + \beta$ sobre la circunferencia.</p>
+                </div>
+
+                <!-- Animation Box -->
+                <div id="animation-control-box" class="flex items-center justify-between gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                  <div>
+                    <p class="text-sm font-extrabold text-slate-800 uppercase">Barrido Continuo</p>
+                    <p class="text-xs sm:text-sm text-slate-500">Observa la invariancia geométrica</p>
+                  </div>
+                  <button id="play-btn" onclick="toggleAnimation()" class="px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-extrabold flex items-center gap-2 transition shadow-md">
+                    <span id="play-icon">▶</span> <span id="play-text">Animar θ</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Live Numeric Verification Cards -->
+              <div id="live-values-panel" class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Full-Width Geometric Proof Card (Strawboard instructions completely removed) -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200">
+            <h3 class="text-lg sm:text-xl font-black text-slate-900 uppercase tracking-wide flex items-center gap-3 mb-4">
+              <span class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-lg">📐</span>
+              Demostración Geométrica y Analítica
+            </h3>
+            <div id="proof-explanation" class="text-base sm:text-lg text-slate-800 space-y-4 leading-relaxed">
+              <!-- Populated by JS & rendered by KaTeX auto-render -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 2: TALLER TÁCTICO: EL GOL TRIGONOMÉTRICO (4 PROBLEMAS CONTINUOS)  -->
+    <!-- ========================================================================= -->
+    <div id="section-taller" class="hidden space-y-6">
+      
+      <!-- Workshop Header & Stage Selector -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200 space-y-5">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-extrabold uppercase tracking-wide mb-2">
+              <span>⚽ Secuencia Didáctica Continua • Algoritmo de Resolución de Problemas (ARP)</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              Taller Táctico: El Gol Trigonométrico
+            </h2>
+            <p class="text-base sm:text-lg text-slate-600 mt-1">
+              Resuelve cada jugada paso a paso: el resultado obtenido en cada situación es el insumo indispensable para ejecutar el siguiente pase hasta anotar el gol.
+            </p>
+          </div>
+
+          <button onclick="triggerPlayAnimation()" class="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-lg transition shrink-0 flex items-center gap-2">
+            <span>▶ Simular Jugada en Cancha</span>
+          </button>
+        </div>
+
+        <!-- 4 Stage Buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2" id="taller-stage-buttons">
+          <button onclick="selectTallerStage(1)" id="stage-btn-1" class="p-4 rounded-2xl border-2 text-left transition-all bg-emerald-50 border-emerald-500 shadow">
+            <span class="text-xs font-black uppercase text-emerald-700">Problema 1 • Pitágoras</span>
+            <p class="text-base font-extrabold text-slate-900 mt-0.5">1. El Pase de Apertura</p>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">Insumo: Radio $R = 1$</p>
+          </button>
+
+          <button onclick="selectTallerStage(2)" id="stage-btn-2" class="p-4 rounded-2xl border-2 text-left transition-all bg-white border-slate-200 hover:border-emerald-300">
+            <span class="text-xs font-black uppercase text-slate-500">Problema 2 • Paridad y Suma</span>
+            <p class="text-base font-extrabold text-slate-900 mt-0.5">2. Regate y Diagonal</p>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">Insumo: $V = \cos(\alpha)$</p>
+          </button>
+
+          <button onclick="selectTallerStage(3)" id="stage-btn-3" class="p-4 rounded-2xl border-2 text-left transition-all bg-white border-slate-200 hover:border-emerald-300">
+            <span class="text-xs font-black uppercase text-slate-500">Problema 3 • Ángulo Doble</span>
+            <p class="text-base font-extrabold text-slate-900 mt-0.5">3. El Pase Filtrado</p>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">Insumo: $\cos(2\alpha)$</p>
+          </button>
+
+          <button onclick="selectTallerStage(4)" id="stage-btn-4" class="p-4 rounded-2xl border-2 text-left transition-all bg-white border-slate-200 hover:border-emerald-300">
+            <span class="text-xs font-black uppercase text-slate-500">Problema 4 • Potencias Reducidas</span>
+            <p class="text-base font-extrabold text-slate-900 mt-0.5">4. El Remate a Gol</p>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">Meta: $T = 1$ (¡GOL!)</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tactical Board + Problem Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left/Top: Interactive Soccer Tactical Pitch Canvas -->
+        <div class="lg:col-span-6 bg-white rounded-3xl shadow-md border border-slate-200 overflow-hidden sticky top-24">
+          <div class="p-4 sm:p-5 bg-slate-900 text-white flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Pizarra Táctica Vista Superior</span>
+              <h3 id="pitch-title" class="text-lg font-extrabold">Esquema Jugada 1: Apertura de Juego</h3>
+            </div>
+            <span id="pitch-badge" class="px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
+              Círculo Unitario R = 1
+            </span>
+          </div>
+
+          <div class="p-3 sm:p-4 bg-emerald-950 flex flex-col items-center">
+            <canvas id="soccerCanvas" width="640" height="440" class="w-full h-auto rounded-2xl border-2 border-emerald-700/60 shadow-xl"></canvas>
+            <div class="mt-3 flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm text-emerald-100 font-medium">
+              <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-sky-400 inline-block border border-white"></span> Jugadores Atacantes ($J_i$)</span>
+              <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-rose-500 inline-block border border-white"></span> Defensores ($R_i$)</span>
+              <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-amber-300 inline-block border border-slate-900"></span> Balón</span>
+            </div>
+          </div>
+
+          <!-- Continuity Chain Summary -->
+          <div class="p-4 sm:p-5 bg-slate-50 border-t border-slate-200">
+            <p class="text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">Cadena de Continuidad del Taller:</p>
+            <div class="text-sm text-slate-800 font-medium leading-relaxed">
+              $P_1\;(R=1) \;\longrightarrow\; P_2\;(V=\cos\alpha) \;\longrightarrow\; P_3\;(\cos 2\alpha) \;\longrightarrow\; P_4\;(T=1 \;\text{¡GOL!})$
+            </div>
+          </div>
+        </div>
+
+        <!-- Right/Bottom: Problem Statement, Hint & Step-by-Step ARP Solution -->
+        <div class="lg:col-span-6 space-y-5">
+          <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200 space-y-5">
+            <div class="flex items-center justify-between gap-2 border-b border-slate-200 pb-4">
+              <div>
+                <span id="prob-tag" class="inline-block px-3 py-1 rounded-lg text-xs font-extrabold uppercase bg-emerald-100 text-emerald-900 mb-1">
+                  Situación Problema 1
+                </span>
+                <h3 id="prob-title" class="text-xl sm:text-2xl font-black text-slate-900">
+                  El Pase de Apertura (Triángulos y Pitágoras)
+                </h3>
+              </div>
+            </div>
+
+            <!-- Problem Statement Body -->
+            <div id="prob-statement" class="text-base sm:text-lg text-slate-800 space-y-4 leading-relaxed">
+              <!-- Populated dynamically -->
+            </div>
+
+            <!-- Action Buttons: Hint & Solution -->
+            <div class="flex flex-wrap gap-3 pt-2">
+              <button onclick="toggleTallerBox('hint')" id="btn-toggle-hint" class="px-5 py-3 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-extrabold text-sm sm:text-base border border-amber-300 transition flex items-center gap-2">
+                <span>💡 Ver Pista Táctica</span>
+              </button>
+              <button onclick="toggleTallerBox('solution')" id="btn-toggle-sol" class="px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2">
+                <span>✅ Mostrar Resolución Paso a Paso (ARP)</span>
+              </button>
+            </div>
+
+            <!-- Collapsible Hint Box -->
+            <div id="prob-hint-box" class="hidden bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 space-y-2">
+              <h4 class="text-base font-black text-amber-950 flex items-center gap-2">
+                <span>💡 Pista para el Estudiante:</span>
+              </h4>
+              <div id="prob-hint-content" class="text-base text-amber-950 leading-relaxed"></div>
+            </div>
+
+            <!-- Collapsible Full ARP Solution Box -->
+            <div id="prob-solution-box" class="hidden bg-emerald-50/70 border-2 border-emerald-400 rounded-2xl p-5 sm:p-6 space-y-4">
+              <h4 class="text-lg font-black text-emerald-950 flex items-center gap-2 border-b border-emerald-200 pb-2">
+                <span>📘 Resolución Formal (Algoritmo de Resolución de Problemas):</span>
+              </h4>
+              <div id="prob-solution-content" class="text-base sm:text-lg text-slate-900 space-y-4 leading-relaxed"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================== INSTITUTIONAL FOOTER ==================== -->
+  <footer class="bg-slate-950 text-slate-300 border-t border-slate-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-center justify-center text-center space-y-1.5">
+      <p class="text-xs uppercase tracking-widest text-amber-400 font-bold">Desarrollado por</p>
+      <p class="text-lg sm:text-xl font-extrabold text-white">Nicolas Moreno Martinez &amp; Esteban Felipe Tellez Ruiz</p>
+      <p class="text-sm sm:text-base font-medium text-slate-300">Fundación Universitaria Konrad Lorenz</p>
+      <p class="text-xs sm:text-sm text-slate-400">Enseñanza de la matemática</p>
+    </div>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
+  <script>
+    // =========================================================================
+    // 0. UNIVERSAL KATEX AUTO-RENDER HELPER
+    // =========================================================================
+    function renderAllLatex(targetElement = document.body) {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(targetElement, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    // =========================================================================
+    // 1. DATA: 12 TRIGONOMETRIC IDENTITIES (CLEAN GEOMETRIC EXPLANATIONS)
+    // =========================================================================
+    const IDENTITIES = [
+      {
+        id: 'def-sincos',
+        category: 'fundamentos',
+        badge: 'Fundamentos',
+        title: '1. Definición de Seno y Coseno',
+        latex: 'P(\\theta) = (\\cos\\theta,\\, \\operatorname{sen}\\theta)',
+        shortDesc: 'Proyecciones ortogonales del radio unitario sobre los ejes X e Y.',
+        proof: `
+          <p>En una circunferencia de radio <strong>$r = 1$</strong> centrada en el origen $(0,0)$, cada ángulo $\\theta$ determina un único punto $P(x,y)$ sobre el borde.</p>
+          <p>Al proyectar perpendicularmente el punto $P$ hacia el eje horizontal $X$, se forma un triángulo rectángulo cuya hipotenusa mide $1$:</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 space-y-2">
+            <p>$$\\cos\\theta = \\frac{\\text{Cateto Adyacente}}{\\text{Hipotenusa}} = \\frac{x}{1} = x$$</p>
+            <p>$$\\operatorname{sen}\\theta = \\frac{\\text{Cateto Opuesto}}{\\text{Hipotenusa}} = \\frac{y}{1} = y$$</p>
+          </div>
+          <p>Por lo tanto, las coordenadas cartesianas de cualquier punto sobre el círculo unitario son exactamente $(\\cos\\theta, \\operatorname{sen}\\theta)$.</p>
+        `
+      },
+      {
+        id: 'pitagorica-1',
+        category: 'pitagoricas',
+        badge: 'Pitagórica Fundamental',
+        title: '2. Identidad Pitagórica Fundamental',
+        latex: '\\operatorname{sen}^2\\theta + \\cos^2\\theta = 1',
+        shortDesc: 'La norma del vector unitario permanece constante en todo el círculo.',
+        proof: `
+          <p>Por el <strong>Teorema de Pitágoras</strong> aplicado al triángulo rectángulo interno de catetos $\\cos\\theta$ y $\\operatorname{sen}\\theta$, e hipotenusa $r = 1$:</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$(\\cos\\theta)^2 + (\\operatorname{sen}\\theta)^2 = 1^2$$
+          </div>
+          <p>Sin importar en qué cuadrante ubiques el punto $P(\\theta)$, la suma de los cuadrados de sus proyecciones ortogonales siempre es exactamente igual a <strong>$1$</strong>.</p>
+        `
+      },
+      {
+        id: 'pitagorica-tan',
+        category: 'pitagoricas',
+        badge: 'Pitagórica Externa',
+        title: '3. Identidad de Tangente y Secante',
+        latex: '1 + \\tan^2\\theta = \\sec^2\\theta',
+        shortDesc: 'Triángulo rectángulo externo sobre la recta tangente en x = 1.',
+        proof: `
+          <p>Trazando una recta vertical tangente al círculo en $(1,0)$, la prolongación del radio unitario corta dicha recta en el punto $(1, \\tan\\theta)$.</p>
+          <p>Se forma un triángulo rectángulo externo cuya base mide $1$, su altura mide $\\tan\\theta$ y su hipotenusa mide $\\sec\\theta$. Aplicando el Teorema de Pitágoras:</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$1^2 + \\tan^2\\theta = \\sec^2\\theta$$
+          </div>
+        `
+      },
+      {
+        id: 'pitagorica-cot',
+        category: 'pitagoricas',
+        badge: 'Pitagórica Externa',
+        title: '4. Identidad de Cotangente y Cosecante',
+        latex: '1 + \\cot^2\\theta = \\csc^2\\theta',
+        shortDesc: 'Triángulo rectángulo externo sobre la recta tangente superior en y = 1.',
+        proof: `
+          <p>Trazando una recta horizontal tangente en el polo superior $(0,1)$, la prolongación del radio la interseca en el punto $(\\cot\\theta, 1)$.</p>
+          <p>En este triángulo rectángulo superior, el cateto vertical mide $1$, el cateto horizontal mide $\\cot\\theta$ y la hipotenusa mide $\\csc\\theta$:</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$1^2 + \\cot^2\\theta = \\csc^2\\theta$$
+          </div>
+        `
+      },
+      {
+        id: 'paridad-cos',
+        category: 'paridad',
+        badge: 'Paridad (Simetría X)',
+        title: '5. Paridad del Coseno (Función Par)',
+        latex: '\\cos(-\\theta) = \\cos(\\theta)',
+        shortDesc: 'El ángulo θ y su opuesto −θ comparten exactamente la misma sombra horizontal.',
+        proof: `
+          <p>Rotar un ángulo negativo $-\\theta$ equivale a reflejar el punto $P(\\theta)$ verticalmente respecto al Eje $X$ (pasando del cuadrante I al IV, o del II al III).</p>
+          <p>Como ambos puntos están alineados sobre la misma recta vertical, su coordenada horizontal $x$ no cambia ni de magnitud ni de signo:</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$\\cos(-\\theta) = \\cos(\\theta)$$
+          </div>
+        `
+      },
+      {
+        id: 'paridad-sin',
+        category: 'paridad',
+        badge: 'Paridad (Función Impar)',
+        title: '6. Paridad del Seno (Función Impar)',
+        latex: '\\operatorname{sen}(-\\theta) = -\\operatorname{sen}(\\theta)',
+        shortDesc: 'Al invertir el ángulo hacia abajo, la proyección vertical invierte su signo.',
+        proof: `
+          <p>Al reflejar el ángulo $\\theta$ hacia $-\\theta$ respecto al Eje $X$, la distancia vertical al eje horizontal se mantiene idéntica en magnitud, pero apunta en sentido opuesto (hacia el semieje negativo de $Y$).</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$\\operatorname{sen}(-\\theta) = -\\operatorname{sen}(\\theta)$$
+          </div>
+        `
+      },
+      {
+        id: 'comp-cos',
+        category: 'complementarios',
+        badge: 'Ángulos Complementarios',
+        title: '7. Coseno del Complementario (90° − θ)',
+        latex: '\\cos\\!\\left(\\frac{\\pi}{2} - \\theta\\right) = \\operatorname{sen}(\\theta)',
+        shortDesc: 'Reflexión respecto a la diagonal y = x intercambia catetos.',
+        proof: `
+          <p>Los ángulos $\\theta$ y $\\frac{\\pi}{2} - \\theta$ ($90^\\circ - \\theta$) son simétricos respecto a la recta bisectriz $y = x$ ($45^\\circ$).</p>
+          <p>Esta reflexión intercambia las coordenadas $(x, y) \\mapsto (y, x)$, de modo que la base horizontal en $\\frac{\\pi}{2} - \\theta$ coincide exactamente con la altura vertical en $\\theta$:</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$\\cos\\!\\left(\\frac{\\pi}{2} - \\theta\\right) = \\operatorname{sen}(\\theta)$$
+          </div>
+        `
+      },
+      {
+        id: 'comp-sin',
+        category: 'complementarios',
+        badge: 'Ángulos Complementarios',
+        title: '8. Seno del Complementario (90° − θ)',
+        latex: '\\operatorname{sen}\\!\\left(\\frac{\\pi}{2} - \\theta\\right) = \\cos(\\theta)',
+        shortDesc: 'La altura vertical en 90° − θ iguala a la sombra horizontal en θ.',
+        proof: `
+          <p>En todo triángulo rectángulo, los dos ángulos agudos son complementarios: suman $\\frac{\\pi}{2}$ radianes ($90^\\circ$). El cateto opuesto de uno es el cateto adyacente del otro.</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$\\operatorname{sen}\\!\\left(\\frac{\\pi}{2} - \\theta\\right) = \\cos(\\theta)$$
+          </div>
+        `
+      },
+      {
+        id: 'supl-sin',
+        category: 'suplementarios',
+        badge: 'Suplementarios (180° − θ)',
+        title: '9. Seno de Ángulos Suplementarios',
+        latex: '\\operatorname{sen}(\\pi - \\theta) = \\operatorname{sen}(\\theta)',
+        shortDesc: 'Simetría respecto al Eje Y conserva la misma altura vertical.',
+        proof: `
+          <p>El ángulo suplementario $\\pi - \\theta$ ($180^\\circ - \\theta$) refleja el punto $P(\\theta)$ horizontalmente a través del Eje $Y$.</p>
+          <p>Al encontrarse ambos puntos a la misma altura respecto al Eje $X$, sus ordenadas son idénticas:</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$\\operatorname{sen}(\\pi - \\theta) = \\operatorname{sen}(\\theta)$$
+          </div>
+        `
+      },
+      {
+        id: 'supl-cos',
+        category: 'suplementarios',
+        badge: 'Suplementarios (180° − θ)',
+        title: '10. Coseno de Ángulos Suplementarios',
+        latex: '\\cos(\\pi - \\theta) = -\\cos(\\theta)',
+        shortDesc: 'Al cruzar el Eje Y, la sombra horizontal cambia de signo.',
+        proof: `
+          <p>Al reflejar el punto $P(\\theta)$ respecto al Eje $Y$ hacia $\\pi - \\theta$, la distancia al eje vertical se conserva intacta, pero la proyección horizontal cambia de semieje (de $+x$ a $-x$ o viceversa):</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$\\cos(\\pi - \\theta) = -\\cos(\\theta)$$
+          </div>
+        `
+      },
+      {
+        id: 'doble-sin',
+        category: 'compuestos',
+        badge: 'Ángulo Doble',
+        title: '11. Seno del Ángulo Doble (2θ)',
+        latex: '\\operatorname{sen}(2\\theta) = 2\\operatorname{sen}\\theta\\cos\\theta',
+        shortDesc: 'Relación entre el vector duplicado 2θ y las proyecciones del ángulo simple θ.',
+        proof: `
+          <p>Considera el triángulo isósceles formado por el origen $(0,0)$, el punto $(1,0)$ y $P(2\\theta)$. Su área se puede calcular de dos maneras equivalentes:</p>
+          <ul class="list-disc pl-6 space-y-1">
+            <li>Tomando base $1$ y altura $\\operatorname{sen}(2\\theta)$: $\\text{Área} = \\frac{1}{2} \\cdot 1 \\cdot \\operatorname{sen}(2\\theta)$.</li>
+            <li>Dividiendo por la bisectriz $\\theta$ en dos triángulos rectángulos de catetos $\\cos\\theta$ y $\\operatorname{sen}\\theta$: $\\text{Área} = 2 \\cdot \\left(\\frac{1}{2}\\operatorname{sen}\\theta\\cos\\theta\\right)$.</li>
+          </ul>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 text-center">
+            $$\\operatorname{sen}(2\\theta) = 2\\operatorname{sen}\\theta\\cos\\theta$$
+          </div>
+        `
+      },
+      {
+        id: 'suma-angulos',
+        category: 'compuestos',
+        badge: 'Suma de Ángulos',
+        title: '12. Seno y Coseno de la Suma (θ + β)',
+        latex: '\\operatorname{sen}(\\theta + \\beta) = \\operatorname{sen}\\theta\\cos\\beta + \\cos\\theta\\operatorname{sen}\\beta',
+        shortDesc: 'Construcción geométrica apilando dos rotaciones consecutivas.',
+        proof: `
+          <p>Partiendo de una rotación base $\\theta$ y añadiendo un ángulo $\\beta$, proyectamos el vector unitario $P(\\theta + \\beta)$ primero sobre el eje rotado $\\theta$ (obteniendo componentes $\\cos\\beta$ y $\\operatorname{sen}\\beta$) y luego sobre los ejes cartesianos $X$ e $Y$:</p>
+          <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 space-y-2 text-center">
+            <p>$$\\operatorname{sen}(\\theta + \\beta) = \\operatorname{sen}\\theta\\cos\\beta + \\cos\\theta\\operatorname{sen}\\beta$$</p>
+            <p>$$\\cos(\\theta + \\beta) = \\cos\\theta\\cos\\beta - \\operatorname{sen}\\theta\\operatorname{sen}\\beta$$</p>
+          </div>
+        `
+      }
+    ];
+
+    // =========================================================================
+    // 2. DATA: TALLER TÁCTICO: EL GOL TRIGONOMÉTRICO (4 CONTINUOUS PROBLEMS)
+    // =========================================================================
+    const TALLER_PROBLEMS = {
+      1: {
+        tag: 'Situación Problema 1 • Pitágoras',
+        title: '1. El Pase de Apertura (Triángulos y Pitágoras)',
+        pitchTitle: 'Jugada 1: Apertura desde el Centro (0,0)',
+        pitchBadge: 'Insumo → R = 1',
+        statement: `
+          <p>El mediocampista organizador ($J_1$) tiene la posesión del balón en el centro del campo, ubicado en el origen de coordenadas $(0,0)$ sobre el Círculo Unitario ($R = 1$). Evalúa dos opciones de pase hacia sus extremos:</p>
+          <ul class="list-disc pl-6 space-y-2 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+            <li><strong>Opción A (Pase a $J_2$ — Banda Izquierda):</strong> Forma un triángulo rectángulo de catetos $x_A = \\cos(\\theta)$ y $y_A = \\operatorname{sen}(\\theta)$, con hipotenusa $d_A$. <em>Nota: el defensor rival $R_1$ cubre esta línea de pase.</em></li>
+            <li><strong>Opción B (Pase a $J_3$ — Banda Derecha):</strong> Forma un triángulo rectángulo de catetos $x_B = \\sqrt{1 - \\operatorname{sen}^2(\\theta)}$ y $y_B = \\sqrt{1 - \\cos^2(\\theta)}$, con hipotenusa $d_B$.</li>
+          </ul>
+          <div class="space-y-2">
+            <p><strong>1.1. Demostración Geométrica:</strong> Aplica el Teorema de Pitágoras y la Identidad Pitagórica Fundamental para demostrar que $d_A = d_B = 1$, y decide tácticamente hacia qué jugador conviene pasar el balón.</p>
+            <p><strong>1.2. Contexto Real (Logística del Partido):</strong> El árbitro verifica la presión del balón obteniendo $0.85\\text{ atm}$. Si el reglamento FIFA exige que la presión esté en el intervalo $[0.6\\text{ atm},\\, 1.1\\text{ atm}]$, formula la desigualdad aritmética y determina si el balón es apto.</p>
+          </div>
+        `,
+        hint: `
+          <p>Recuerda que de $\\operatorname{sen}^2(\\theta) + \\cos^2(\\theta) = 1$ se despeja $\\operatorname{sen}^2(\\theta) = 1 - \\cos^2(\\theta)$ y $\\cos^2(\\theta) = 1 - \\operatorname{sen}^2(\\theta)$. Al elevar al cuadrado las raíces en $d_B^2$, estas se cancelan directamente.</p>
+        `,
+        solution: `
+          <p><strong>1. Comprensión y Planteamiento (ARP):</strong></p>
+          <p>Aplicando el Teorema de Pitágoras ($h^2 = x^2 + y^2$) a cada opción de pase:</p>
+          <p>$$d_A^2 = \\cos^2(\\theta) + \\operatorname{sen}^2(\\theta) = 1 \\implies d_A = \\sqrt{1} = 1$$</p>
+          <p>Para el pase hacia $J_3$:</p>
+          <p>$$d_B^2 = \\left(\\sqrt{1 - \\operatorname{sen}^2(\\theta)}\\right)^2 + \\left(\\sqrt{1 - \\cos^2(\\theta)}\\right)^2$$</p>
+          <p>$$d_B^2 = (1 - \\operatorname{sen}^2(\\theta)) + (1 - \\cos^2(\\theta)) = 2 - (\\operatorname{sen}^2(\\theta) + \\cos^2(\\theta)) = 2 - 1 = 1 \\implies d_B = 1$$</p>
+          <p><strong>2. Decisión Táctica:</strong> Aunque ambos pases tienen exactamente la misma distancia unitaria ($d_A = d_B = 1$), el marcador $R_1$ bloquea la banda de $J_2$. Por lo tanto, <strong>el pase correcto es hacia $J_3$</strong>.</p>
+          <p><strong>3. Contexto Real (Presión FIFA):</strong> Como $0.6 \\le 0.85 \\le 1.1$, <strong>el balón cumple el reglamento</strong> y está apto para jugar.</p>
+          <div class="p-3 rounded-xl bg-emerald-100 text-emerald-950 font-bold">
+            📌 Insumo para el Problema 2: El balón queda sobre la circunferencia unitaria ($R = 1$) en poder de $J_3$.
+          </div>
+        `
+      },
+      2: {
+        tag: 'Situación Problema 2 • Paridad y Suma/Resta',
+        title: '2. El Regate y la Diagonal (Paridad y Resta de Ángulos)',
+        pitchTitle: 'Jugada 2: Desmarque de J3 y Pared hacia J4',
+        pitchBadge: 'Insumo → V = cos(α)',
+        statement: `
+          <p>El extremo derecho ($J_3$) recibe el balón en el borde del círculo unitario ($R = 1$ obtenido en el Problema 1). Para eludir la marca del defensor $R_2$, realiza un amague con ángulo negativo $-\\beta$ y proyecta una diagonal hacia el mediapunta ($J_4$) con ángulo combinado $\\alpha - \\beta$.</p>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+            <p>La componente de velocidad horizontal $V$ del pase filtrado hacia $J_4$ está modelada por la expresión:</p>
+            <p>$$V = \\frac{\\cos(\\alpha - \\beta) - \\operatorname{sen}(\\alpha)\\operatorname{sen}(\\beta)}{\\cos(\\beta)}$$</p>
+          </div>
+          <p><strong>Instrucción:</strong> Sabiendo por paridad que $\\cos(-\\beta) = \\cos(\\beta)$ y $\\operatorname{sen}(-\\beta) = -\\operatorname{sen}(\\beta)$, aplica la identidad de resta de ángulos $\\cos(\\alpha - \\beta) = \\cos(\\alpha)\\cos(\\beta) + \\operatorname{sen}(\\alpha)\\operatorname{sen}(\\beta)$ para simplificar $V$ y hallar el insumo horizontal para $J_4$.</p>
+        `,
+        hint: `
+          <p>Sustituye el numerador $\\cos(\\alpha - \\beta)$ por su desarrollo $\\cos(\\alpha)\\cos(\\beta) + \\operatorname{sen}(\\alpha)\\operatorname{sen}(\\beta)$. Observa que los términos con $\\operatorname{sen}(\\alpha)\\operatorname{sen}(\\beta)$ se cancelan entre sí.</p>
+        `,
+        solution: `
+          <p><strong>1. Sustitución de la Identidad de Resta de Ángulos:</strong></p>
+          <p>$$V = \\frac{\\left[\\cos(\\alpha)\\cos(\\beta) + \\operatorname{sen}(\\alpha)\\operatorname{sen}(\\beta)\\right] - \\operatorname{sen}(\\alpha)\\operatorname{sen}(\\beta)}{\\cos(\\beta)}$$</p>
+          <p><strong>2. Cancelación de Términos Opuestos:</strong></p>
+          <p>Al restar $\\operatorname{sen}(\\alpha)\\operatorname{sen}(\\beta) - \\operatorname{sen}(\\alpha)\\operatorname{sen}(\\beta) = 0$, el numerador se reduce a:</p>
+          <p>$$V = \\frac{\\cos(\\alpha)\\cos(\\beta)}{\\cos(\\beta)}$$</p>
+          <p><strong>3. Simplificación Final (para $\\cos(\\beta) \\neq 0$):</strong></p>
+          <p>$$V = \\cos(\\alpha)$$</p>
+          <div class="p-3 rounded-xl bg-emerald-100 text-emerald-950 font-bold">
+            📌 Insumo para el Problema 3: La proyección horizontal del pase hacia $J_4$ es $V = \\cos(\\alpha)$.
+          </div>
+        `
+      },
+      3: {
+        tag: 'Situación Problema 3 • Ángulo Doble',
+        title: '3. El Pase Filtrado (Identidades del Ángulo Doble)',
+        pitchTitle: 'Jugada 3: Pase Entre Centrales con Ángulo 2α',
+        pitchBadge: 'Insumo → cos(2α) = 1 - 2sen²(α)',
+        statement: `
+          <p>El mediapunta ($J_4$) controla el balón en la media luna del área con velocidad horizontal $V = \\cos(\\alpha)$ (insumo del Problema 2). Para filtrar el balón por el hueco entre los dos defensas centrales hacia el delantero ($J_5$), debe duplicar el ángulo de apertura a $2\\alpha$.</p>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+            <p>La potencia vertical de elevación $P$ del pase filtrado está dada por:</p>
+            <p>$$P = \\frac{\\operatorname{sen}(2\\alpha)}{2\\cos(\\alpha)}$$</p>
+          </div>
+          <div class="space-y-2">
+            <p><strong>3.1. Simplificación de Potencia:</strong> Aplica $\\operatorname{sen}(2\\alpha) = 2\\operatorname{sen}(\\alpha)\\cos(\\alpha)$ para demostrar que $P = \\operatorname{sen}(\\alpha)$.</p>
+            <p><strong>3.2. Preparación para el Remate:</strong> Partiendo de $\\cos(2\\alpha) = \\cos^2(\\alpha) - \\operatorname{sen}^2(\\alpha)$ y la Identidad Pitagórica, expresa $\\cos(2\\alpha)$ únicamente en términos de $\\operatorname{sen}^2(\\alpha)$.</p>
+            <p><strong>3.3. Contexto Real (Aforo del Estadio):</strong> El estadio tiene capacidad para $45.000$ espectadores y presenta una ocupación de $\\frac{4}{5}$. Calcula cuántos asistentes hay y cuántos asientos quedaron vacíos.</p>
+          </div>
+        `,
+        hint: `
+          <p>En el punto 3.2, reemplaza $\\cos^2(\\alpha)$ por $1 - \\operatorname{sen}^2(\\alpha)$ dentro de la fórmula $\\cos(2\\alpha) = \\cos^2(\\alpha) - \\operatorname{sen}^2(\\alpha)$.</p>
+        `,
+        solution: `
+          <p><strong>1. Demostración de la Potencia $P$:</strong></p>
+          <p>$$P = \\frac{\\operatorname{sen}(2\\alpha)}{2\\cos(\\alpha)} = \\frac{2\\operatorname{sen}(\\alpha)\\cos(\\alpha)}{2\\cos(\\alpha)} = \\operatorname{sen}(\\alpha)$$</p>
+          <p><strong>2. Expresión de $\\cos(2\\alpha)$ en términos de $\\operatorname{sen}^2(\\alpha)$:</strong></p>
+          <p>$$\\cos(2\\alpha) = \\cos^2(\\alpha) - \\operatorname{sen}^2(\\alpha) = (1 - \\operatorname{sen}^2(\\alpha)) - \\operatorname{sen}^2(\\alpha) = 1 - 2\\operatorname{sen}^2(\\alpha)$$</p>
+          <p><strong>3. Contexto Real (Aforo):</strong> Asistentes $= 45.000 \\times \\frac{4}{5} = 36.000$ personas. Asientos vacíos $= 45.000 - 36.000 = 9.000$ asientos.</p>
+          <div class="p-3 rounded-xl bg-emerald-100 text-emerald-950 font-bold">
+            📌 Insumo para el Problema 4: La relación $\\cos(2\\alpha) = 1 - 2\\operatorname{sen}^2(\\alpha)$ calibra el disparo final de $J_5$.
+          </div>
+        `
+      },
+      4: {
+        tag: 'Situación Problema 4 • Potencias Reducidas',
+        title: '4. El Remate a Gol (Reducción de Potencias y Disparo Final)',
+        pitchTitle: 'Jugada 4: Remate de Volea de J5 a la Escuadra',
+        pitchBadge: 'Resultado → T = 1 ¡GOL!',
+        statement: `
+          <p>El delantero centro ($J_5$) recibe el pase filtrado frente al arco. Para superar la estirada del guardameta y lograr que el balón descienda hacia la escuadra superior (efecto <em>folha seca</em>), la trayectoria del remate $T$ está gobernada por:</p>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center">
+            $$T = 2\\operatorname{sen}^2(\\alpha) + \\cos(2\\alpha)$$
+          </div>
+          <div class="space-y-2">
+            <p><strong>4.1. Demostración del Gol:</strong> Aplica la <strong>Identidad de Reducción de Potencia</strong> $\\operatorname{sen}^2(\\alpha) = \\dfrac{1 - \\cos(2\\alpha)}{2}$ (o sustituye el resultado $\\cos(2\\alpha) = 1 - 2\\operatorname{sen}^2(\\alpha)$ del Problema 3) para demostrar que $T = 1$, confirmando que el balón entra exactamente por la escuadra (<strong>¡GOL!</strong>).</p>
+            <p><strong>4.2. Contexto Real (Premiación):</strong> Tras ganar el partido, el trofeo de campeonato tiene una masa de $4.8\\text{ kg}$. Si se reparte simbólicamente en partes iguales entre los $12$ jugadores del plantel ($11$ titulares y $1$ suplente), ¿cuántos <strong>gramos</strong> corresponden a cada jugador?</p>
+          </div>
+        `,
+        hint: `
+          <p>Sustituye $\\operatorname{sen}^2(\\alpha) = \\frac{1 - \\cos(2\\alpha)}{2}$ en $T = 2\\operatorname{sen}^2(\\alpha) + \\cos(2\\alpha)$. El factor $2$ que multiplica se cancela con el denominador $2$.</p>
+        `,
+        solution: `
+          <p><strong>1. Sustitución de la Identidad de Reducción de Potencia:</strong></p>
+          <p>$$T = 2\\left(\\frac{1 - \\cos(2\\alpha)}{2}\\right) + \\cos(2\\alpha)$$</p>
+          <p><strong>2. Cancelación y Simplificación Algebraica:</strong></p>
+          <p>$$T = 1 - \\cos(2\\alpha) + \\cos(2\\alpha)$$</p>
+          <p>$$T = 1 \\quad \\Longrightarrow \\quad \\text{¡GOL EN LA ESCUADRA!}$$</p>
+          <p><strong>3. Contexto Real (Masa del Trofeo):</strong> $4.8\\text{ kg} = 4.800\\text{ g}$. Dividiendo entre $12$ jugadores: $\\dfrac{4.800\\text{ g}}{12} = 400\\text{ gramos}$ por jugador.</p>
+          <div class="p-3 rounded-xl bg-emerald-600 text-white font-extrabold text-center">
+            🏆 ¡JUGADA COMPLETADA! Todas las identidades conectaron de $R=1$ hasta $T=1$.
+          </div>
+        `
+      }
+    };
+
+    // =========================================================================
+    // 3. STATE & INITIALIZATION
+    // =========================================================================
+    let currentIdentityId = 'pitagorica-1';
+    let currentFilter = 'all';
+    let thetaDeg = 35;
+    let betaDeg = 25;
+    let isAnimating = false;
+    let animFrameId = null;
+    let isDragging = false;
+
+    // Taller state
+    let currentTallerStage = 1;
+    let ballAnimProgress = 1; // 0 to 1
+    let ballAnimId = null;
+
+    const canvas = document.getElementById('unitCircleCanvas');
+    const ctx = canvas.getContext('2d');
+    const soccerCanvas = document.getElementById('soccerCanvas');
+    const sCtx = soccerCanvas.getContext('2d');
+
+    function init() {
+      renderIdentityList();
+      selectIdentity('pitagorica-1');
+      setupCanvasDrag();
+      drawScene();
+      selectTallerStage(1);
+      renderAllLatex(document.body);
+    }
+
+    // =========================================================================
+    // 4. NAVIGATION & PROJECTOR XL MODE
+    // =========================================================================
+    function switchSection(sec) {
+      const simEl = document.getElementById('section-simulator');
+      const tallerEl = document.getElementById('section-taller');
+      const navSim = document.getElementById('nav-sim');
+      const navTaller = document.getElementById('nav-taller');
+
+      if (sec === 'simulator') {
+        simEl.classList.remove('hidden');
+        tallerEl.classList.add('hidden');
+        navSim.className = 'px-4 py-2 rounded-xl text-sm sm:text-base font-bold transition-all bg-amber-500 text-slate-950 shadow';
+        navTaller.className = 'px-4 py-2 rounded-xl text-sm sm:text-base font-bold text-slate-300 hover:text-white transition-all';
+        drawScene();
+      } else {
+        simEl.classList.add('hidden');
+        tallerEl.classList.remove('hidden');
+        navTaller.className = 'px-4 py-2 rounded-xl text-sm sm:text-base font-bold transition-all bg-emerald-500 text-slate-950 shadow';
+        navSim.className = 'px-4 py-2 rounded-xl text-sm sm:text-base font-bold text-slate-300 hover:text-white transition-all';
+        drawSoccerPitch();
+        renderAllLatex(tallerEl);
+      }
+    }
+
+    function toggleProjectorMode() {
+      const htmlEl = document.documentElement;
+      const btn = document.getElementById('projector-btn');
+      htmlEl.classList.toggle('projector-xl');
+      const active = htmlEl.classList.contains('projector-xl');
+      btn.innerHTML = active
+        ? '<span>🔎 Modo Normal (100%)</span>'
+        : '<span>🔍 Modo Proyector (Texto XL)</span>';
+      btn.className = active
+        ? 'px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-400 text-slate-950 border border-amber-300 shadow transition flex items-center gap-1.5'
+        : 'px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-400/40 shadow transition flex items-center gap-1.5';
+    }
+
+    // =========================================================================
+    // 5. IDENTITY LIST & SELECTION (WITH KATEX AUTO-RENDER)
+    // =========================================================================
+    function filterIdentities(cat) {
+      currentFilter = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.classList.add('tab-active');
+          btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        } else {
+          btn.classList.remove('tab-active');
+          btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+        }
+      });
+      renderIdentityList();
+    }
+
+    function renderIdentityList() {
+      const container = document.getElementById('identities-list');
+      container.innerHTML = '';
+
+      const filtered = currentFilter === 'all'
+        ? IDENTITIES
+        : IDENTITIES.filter(item => item.category === currentFilter);
+
+      filtered.forEach(item => {
+        const isActive = item.id === currentIdentityId;
+        const card = document.createElement('button');
+        card.onclick = () => selectIdentity(item.id);
+        card.className = `w-full text-left p-4 rounded-2xl border-2 transition-all flex flex-col gap-1.5 ${
+          isActive
+            ? 'identity-card-active border-amber-500'
+            : 'border-slate-200 hover:border-amber-300 hover:bg-slate-50'
+        }`;
+
+        const topRow = document.createElement('div');
+        topRow.className = 'flex items-center justify-between gap-2 w-full';
+        topRow.innerHTML = `
+          <span class="text-sm sm:text-base font-extrabold text-slate-900">${item.title}</span>
+          <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-slate-200/80 text-slate-700 shrink-0">${item.badge}</span>
+        `;
+
+        const formulaDiv = document.createElement('div');
+        formulaDiv.className = 'text-base sm:text-lg text-slate-900 py-1 overflow-x-auto';
+        katex.render(item.latex, formulaDiv, { throwOnError: false });
+
+        const descP = document.createElement('p');
+        descP.className = 'text-xs sm:text-sm text-slate-600';
+        descP.textContent = item.shortDesc;
+
+        card.appendChild(topRow);
+        card.appendChild(formulaDiv);
+        card.appendChild(descP);
+        container.appendChild(card);
+      });
+    }
+
+    function selectIdentity(id) {
+      currentIdentityId = id;
+      const item = IDENTITIES.find(i => i.id === id);
+      if (!item) return;
+
+      document.getElementById('active-badge').textContent = item.badge;
+      document.getElementById('active-title').textContent = item.title;
+      katex.render(item.latex, document.getElementById('active-formula-katex'), { throwOnError: false });
+
+      const proofEl = document.getElementById('proof-explanation');
+      proofEl.innerHTML = item.proof;
+      // Render all LaTeX inside proof box immediately
+      renderAllLatex(proofEl);
+
+      // Show/Hide Beta slider for angle addition
+      const betaBox = document.getElementById('beta-control-box');
+      if (id === 'suma-angulos') {
+        betaBox.classList.remove('hidden');
+      } else {
+        betaBox.classList.add('hidden');
+      }
+
+      // Avoid asymptote singularities
+      if (id === 'pitagorica-tan' && (Math.abs(thetaDeg - 90) < 12 || Math.abs(thetaDeg - 270) < 12)) {
+        setTheta(35);
+      } else if (id === 'pitagorica-cot' && (thetaDeg < 15 || Math.abs(thetaDeg - 180) < 15 || thetaDeg > 345)) {
+        setTheta(45);
+      }
+
+      renderIdentityList();
+      drawScene();
+    }
+
+    // =========================================================================
+    // 6. SLIDERS, DRAG & ANIMATION FOR UNIT CIRCLE
+    // =========================================================================
+    document.getElementById('theta-slider').addEventListener('input', (e) => {
+      thetaDeg = parseFloat(e.target.value);
+      updateReadouts();
+      drawScene();
+    });
+
+    document.getElementById('beta-slider').addEventListener('input', (e) => {
+      betaDeg = parseFloat(e.target.value);
+      document.getElementById('beta-readout').textContent = `${betaDeg}°`;
+      drawScene();
+    });
+
+    function setTheta(deg) {
+      thetaDeg = deg;
+      document.getElementById('theta-slider').value = deg;
+      updateReadouts();
+      drawScene();
+    }
+
+    function updateReadouts() {
+      const rad = (thetaDeg * Math.PI) / 180;
+      document.getElementById('theta-readout').textContent = `${Math.round(thetaDeg)}° (${rad.toFixed(2)} rad)`;
+    }
+
+    function toggleAnimation() {
+      isAnimating = !isAnimating;
+      const icon = document.getElementById('play-icon');
+      const text = document.getElementById('play-text');
+      if (isAnimating) {
+        icon.textContent = '⏸';
+        text.textContent = 'Pausar';
+        animateLoop();
+      } else {
+        icon.textContent = '▶';
+        text.textContent = 'Animar θ';
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+      }
+    }
+
+    function animateLoop() {
+      if (!isAnimating) return;
+      thetaDeg = (thetaDeg + 0.6) % 360;
+      document.getElementById('theta-slider').value = thetaDeg;
+      updateReadouts();
+      drawScene();
+      animFrameId = requestAnimationFrame(animateLoop);
+    }
+
+    function setupCanvasDrag() {
+      const getAngleFromEvent = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        let angle = Math.atan2(-(y - cy), x - cx) * (180 / Math.PI);
+        if (angle < 0) angle += 360;
+        return Math.round(angle);
+      };
+
+      canvas.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        if (isAnimating) toggleAnimation();
+        setTheta(getAngleFromEvent(e));
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        setTheta(getAngleFromEvent(e));
+      });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      canvas.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        if (isAnimating) toggleAnimation();
+        setTheta(getAngleFromEvent(e));
+      }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        setTheta(getAngleFromEvent(e));
+      }, { passive: true });
+      window.addEventListener('touchend', () => { isDragging = false; });
+    }
+
+    // =========================================================================
+    // 7. UNIT CIRCLE CANVAS RENDERER (HIGH-CONTRAST PRESENTATION STYLE)
+    // =========================================================================
+    function drawScene() {
+      const W = canvas.width;
+      const H = canvas.height;
+      const cx = W / 2;
+      const cy = H / 2;
+      const R = 175;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Deep Slate Manim-style Background with subtle grid
+      ctx.fillStyle = '#090d16';
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.08)';
+      ctx.lineWidth = 1;
+      for (let gx = cx % 35; gx < W; gx += 35) {
+        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke();
+      }
+      for (let gy = cy % 35; gy < H; gy += 35) {
+        ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
+      }
+
+      // Coordinate Axes
+      ctx.save();
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(35, cy);
+      ctx.lineTo(W - 35, cy);
+      ctx.moveTo(cx, 25);
+      ctx.lineTo(cx, H - 25);
+      ctx.stroke();
+
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = 'bold 14px Inter, sans-serif';
+      ctx.fillText('X (cos θ)', W - 95, cy - 10);
+      ctx.fillText('Y (sen θ)', cx + 10, 38);
+      ctx.fillText('1', cx + R + 6, cy + 18);
+      ctx.fillText('-1', cx - R - 20, cy + 18);
+      ctx.fillText('1', cx + 8, cy - R - 6);
+      ctx.fillText('-1', cx + 8, cy + R + 18);
+      ctx.restore();
+
+      // Unit Circle Outline
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 2.8;
+      ctx.stroke();
+      ctx.restore();
+
+      // Notable Angle Markers on Circle
+      const notableAngles = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+      notableAngles.forEach(deg => {
+        const rad = (deg * Math.PI) / 180;
+        const px = cx + R * Math.cos(rad);
+        const py = cy - R * Math.sin(rad);
+        drawNodePoint(px, py, '#475569', 4, false);
+        const lx = cx + (R + 22) * Math.cos(rad) - 12;
+        const ly = cy - (R + 22) * Math.sin(rad) + 4;
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 11px JetBrains Mono, monospace';
+        ctx.fillText(`${deg}°`, lx, ly);
+      });
+
+      const theta = (thetaDeg * Math.PI) / 180;
+      const cosT = Math.cos(theta);
+      const sinT = Math.sin(theta);
+      const px = cx + R * cosT;
+      const py = cy - R * sinT;
+
+      // Angle Sector Arc
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, 36, 0, -theta, true);
+      ctx.strokeStyle = '#f43f5e';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.fillStyle = '#fda4af';
+      ctx.font = 'bold 15px Inter, sans-serif';
+      const midAngle = theta / 2;
+      ctx.fillText('θ', cx + 46 * Math.cos(midAngle) - 4, cy - 46 * Math.sin(midAngle) + 5);
+      ctx.restore();
+
+      // Identity-specific Vector Drawings
+      if (currentIdentityId === 'def-sincos' || currentIdentityId === 'pitagorica-1') {
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.2)';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(px, cy);
+        ctx.lineTo(px, py);
+        ctx.closePath();
+        ctx.fill();
+
+        drawRightAngleMarker(px, cy, cosT >= 0 ? -12 : 12, sinT >= 0 ? -12 : 12);
+
+        drawVectorLine(cx, cy, px, cy, '#3b82f6', 4.5, `cos θ = ${cosT.toFixed(2)}`, (cx + px) / 2 - 20, cy + (sinT >= 0 ? 22 : -12));
+        drawVectorLine(px, cy, px, py, '#34d399', 4.5, `sen θ = ${sinT.toFixed(2)}`, px + (cosT >= 0 ? 12 : -105), (cy + py) / 2);
+        drawVectorLine(cx, cy, px, py, '#fbbf24', 4.5, 'r = 1', (cx + px) / 2 - 24, (cy + py) / 2 - 12);
+
+        drawNodePoint(px, cy, '#3b82f6', 5.5, true);
+      }
+
+      else if (currentIdentityId === 'pitagorica-tan') {
+        const tanX = cx + R;
+        ctx.save();
+        ctx.setLineDash([6, 6]);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(tanX, 15);
+        ctx.lineTo(tanX, H - 15);
+        ctx.stroke();
+        ctx.restore();
+
+        const safeCos = Math.abs(cosT) < 0.15 ? (cosT >= 0 ? 0.15 : -0.15) : cosT;
+        const tanVal = sinT / safeCos;
+        const secVal = 1 / safeCos;
+        const clampedTanY = Math.max(20, Math.min(H - 20, cy - R * tanVal));
+
+        ctx.fillStyle = 'rgba(249, 115, 22, 0.18)';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(tanX, cy);
+        ctx.lineTo(tanX, clampedTanY);
+        ctx.closePath();
+        ctx.fill();
+
+        drawVectorLine(cx, cy, tanX, cy, '#3b82f6', 4, 'Base = 1', (cx + tanX) / 2 - 25, cy + 20);
+        drawVectorLine(tanX, cy, tanX, clampedTanY, '#fb923c', 5, `tan θ = ${tanVal.toFixed(2)}`, tanX + 12, (cy + clampedTanY) / 2);
+        drawVectorLine(cx, cy, tanX, clampedTanY, '#f87171', 4, `sec θ = ${secVal.toFixed(2)}`, (cx + tanX) / 2 - 40, (cy + clampedTanY) / 2 - 14);
+
+        drawNodePoint(tanX, cy, '#3b82f6', 5.5, true);
+        drawNodePoint(tanX, clampedTanY, '#fb923c', 6.5, true);
+      }
+
+      else if (currentIdentityId === 'pitagorica-cot') {
+        const cotY = cy - R;
+        ctx.save();
+        ctx.setLineDash([6, 6]);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(30, cotY);
+        ctx.lineTo(W - 30, cotY);
+        ctx.stroke();
+        ctx.restore();
+
+        const safeSin = Math.abs(sinT) < 0.15 ? (sinT >= 0 ? 0.15 : -0.15) : sinT;
+        const cotVal = cosT / safeSin;
+        const cscVal = 1 / safeSin;
+        const clampedCotX = Math.max(30, Math.min(W - 30, cx + R * cotVal));
+
+        ctx.fillStyle = 'rgba(192, 132, 252, 0.18)';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx, cotY);
+        ctx.lineTo(clampedCotX, cotY);
+        ctx.closePath();
+        ctx.fill();
+
+        drawVectorLine(cx, cy, cx, cotY, '#34d399', 4, 'Altura = 1', cx - 80, (cy + cotY) / 2);
+        drawVectorLine(cx, cotY, clampedCotX, cotY, '#c084fc', 5, `cot θ = ${cotVal.toFixed(2)}`, (cx + clampedCotX) / 2 - 30, cotY - 12);
+        drawVectorLine(cx, cy, clampedCotX, cotY, '#f87171', 4, `csc θ = ${cscVal.toFixed(2)}`, (cx + clampedCotX) / 2 + 12, (cy + cotY) / 2 + 14);
+
+        drawNodePoint(cx, cotY, '#34d399', 5.5, true);
+        drawNodePoint(clampedCotX, cotY, '#c084fc', 6.5, true);
+      }
+
+      else if (currentIdentityId === 'paridad-cos' || currentIdentityId === 'paridad-sin') {
+        const pyNeg = cy + R * sinT;
+
+        ctx.save();
+        ctx.setLineDash([5, 5]);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(px, pyNeg);
+        ctx.stroke();
+        ctx.restore();
+
+        drawVectorLine(cx, cy, px, cy, '#3b82f6', 5, `cos(-θ) = cos(θ) = ${cosT.toFixed(2)}`, (cx + px) / 2 - 55, cy + 22);
+        drawVectorLine(px, cy, px, py, '#34d399', 4.5, `+sen(θ) = ${sinT.toFixed(2)}`, px + 12, (cy + py) / 2);
+        drawVectorLine(px, cy, px, pyNeg, '#c084fc', 4.5, `sen(-θ) = ${(-sinT).toFixed(2)}`, px + 12, (cy + pyNeg) / 2);
+
+        drawVectorLine(cx, cy, px, py, '#fbbf24', 4, 'θ', (cx + px) / 2 - 12, (cy + py) / 2 - 10);
+        drawVectorLine(cx, cy, px, pyNeg, '#f472b6', 4, '-θ', (cx + px) / 2 - 16, (cy + pyNeg) / 2 + 16);
+
+        drawNodePoint(px, pyNeg, '#f472b6', 7, true);
+      }
+
+      else if (currentIdentityId === 'comp-cos' || currentIdentityId === 'comp-sin') {
+        ctx.save();
+        ctx.setLineDash([6, 6]);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cx - R * 1.15, cy + R * 1.15);
+        ctx.lineTo(cx + R * 1.15, cy - R * 1.15);
+        ctx.stroke();
+        ctx.restore();
+
+        const compRad = Math.PI / 2 - theta;
+        const cpx = cx + R * Math.cos(compRad);
+        const cpy = cy - R * Math.sin(compRad);
+
+        drawVectorLine(cx, cy, px, py, '#fbbf24', 4, 'θ', (cx + px) / 2 - 12, (cy + py) / 2 - 10);
+        drawVectorLine(cx, cy, px, cy, '#3b82f6', 4, 'cos θ', (cx + px) / 2 - 18, cy + 20);
+        drawVectorLine(px, cy, px, py, '#34d399', 4, 'sen θ', px + 10, (cy + py) / 2);
+
+        drawVectorLine(cx, cy, cpx, cpy, '#c084fc', 4, '90°−θ', (cx + cpx) / 2 - 34, (cy + cpy) / 2 - 10);
+        drawVectorLine(cx, cy, cpx, cy, '#34d399', 3.5, '', 0, 0);
+        drawVectorLine(cpx, cy, cpx, cpy, '#3b82f6', 3.5, '', 0, 0);
+
+        drawNodePoint(cpx, cpy, '#c084fc', 7, true);
+      }
+
+      else if (currentIdentityId === 'supl-sin' || currentIdentityId === 'supl-cos') {
+        const suplRad = Math.PI - theta;
+        const spx = cx + R * Math.cos(suplRad);
+        const spy = cy - R * Math.sin(suplRad);
+
+        ctx.save();
+        ctx.setLineDash([5, 5]);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(spx, spy);
+        ctx.stroke();
+        ctx.restore();
+
+        drawVectorLine(cx, cy, px, py, '#fbbf24', 4, 'θ', (cx + px) / 2, (cy + py) / 2 - 10);
+        drawVectorLine(cx, cy, px, cy, '#3b82f6', 4.5, `cos θ = ${cosT.toFixed(2)}`, (cx + px) / 2 - 25, cy + 22);
+        drawVectorLine(px, cy, px, py, '#34d399', 4.5, 'sen θ', px + 10, (cy + py) / 2);
+
+        drawVectorLine(cx, cy, spx, spy, '#38bdf8', 4, '180°−θ', (cx + spx) / 2 - 42, (cy + spy) / 2 - 10);
+        drawVectorLine(cx, cy, spx, cy, '#f87171', 4.5, `-cos θ = ${(-cosT).toFixed(2)}`, (cx + spx) / 2 - 35, cy + 22);
+        drawVectorLine(spx, cy, spx, spy, '#34d399', 4.5, 'sen(π−θ)', spx - 75, (cy + spy) / 2);
+
+        drawNodePoint(spx, spy, '#38bdf8', 7, true);
+      }
+
+      else if (currentIdentityId === 'doble-sin') {
+        const doubleRad = 2 * theta;
+        const dpx = cx + R * Math.cos(doubleRad);
+        const dpy = cy - R * Math.sin(doubleRad);
+
+        ctx.fillStyle = 'rgba(52, 211, 153, 0.16)';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + R, cy);
+        ctx.lineTo(dpx, dpy);
+        ctx.closePath();
+        ctx.fill();
+
+        drawVectorLine(cx + R, cy, dpx, dpy, '#94a3b8', 3, 'Cuerda = 2·sen θ', (cx + R + dpx) / 2 + 10, (cy + dpy) / 2);
+        drawVectorLine(cx, cy, px, py, '#fbbf24', 4, 'θ', (cx + px) / 2, (cy + py) / 2 - 10);
+        drawVectorLine(cx, cy, dpx, dpy, '#c084fc', 4.5, '2θ', (cx + dpx) / 2 - 18, (cy + dpy) / 2 - 10);
+        drawVectorLine(dpx, cy, dpx, dpy, '#34d399', 4.5, `sen(2θ) = ${Math.sin(doubleRad).toFixed(2)}`, dpx + 10, (cy + dpy) / 2);
+
+        drawNodePoint(dpx, dpy, '#c084fc', 7, true);
+      }
+
+      else if (currentIdentityId === 'suma-angulos') {
+        const beta = (betaDeg * Math.PI) / 180;
+        const sumRad = theta + beta;
+        const spx = cx + R * Math.cos(sumRad);
+        const spy = cy - R * Math.sin(sumRad);
+
+        const cosB = Math.cos(beta);
+        const projX = cx + R * cosB * Math.cos(theta);
+        const projY = cy - R * cosB * Math.sin(theta);
+
+        ctx.fillStyle = 'rgba(192, 132, 252, 0.18)';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(projX, projY);
+        ctx.lineTo(spx, spy);
+        ctx.closePath();
+        ctx.fill();
+
+        drawVectorLine(cx, cy, px, py, '#fbbf24', 4, 'θ', (cx + px) / 2, (cy + py) / 2 + 16);
+        drawVectorLine(projX, projY, spx, spy, '#f472b6', 4, 'sen β', (projX + spx) / 2 + 8, (projY + spy) / 2 - 6);
+        drawVectorLine(cx, cy, spx, spy, '#c084fc', 4.5, 'θ + β', (cx + spx) / 2 - 36, (cy + spy) / 2 - 12);
+        drawVectorLine(spx, cy, spx, spy, '#34d399', 4, `sen(θ+β) = ${Math.sin(sumRad).toFixed(2)}`, spx + 10, (cy + spy) / 2);
+
+        drawNodePoint(projX, projY, '#f472b6', 5.5, true);
+        drawNodePoint(spx, spy, '#c084fc', 7, true);
+      }
+
+      // Draw Origin & Primary Movable Point on Top
+      drawNodePoint(cx, cy, '#ef4444', 7, true);
+      drawNodePoint(px, py, '#fbbf24', 8.5, true);
+
+      updateLiveVerification(theta, cosT, sinT);
+    }
+
+    function drawVectorLine(x1, y1, x2, y2, color, width, label, lx, ly) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      if (label) {
+        ctx.font = 'bold 13px JetBrains Mono, monospace';
+        const metrics = ctx.measureText(label);
+        ctx.fillStyle = 'rgba(9, 13, 22, 0.88)';
+        ctx.fillRect(lx - 4, ly - 13, metrics.width + 8, 18);
+        ctx.fillStyle = color;
+        ctx.fillText(label, lx, ly);
+      }
+      ctx.restore();
+    }
+
+    function drawNodePoint(x, y, color, radius, highlight) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.lineWidth = highlight ? 2.5 : 1.2;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawRightAngleMarker(x, y, dx, dy) {
+      ctx.save();
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(x + dx, y);
+      ctx.lineTo(x + dx, y + dy);
+      ctx.lineTo(x, y + dy);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function updateLiveVerification(theta, cosT, sinT) {
+      const panel = document.getElementById('live-values-panel');
+      let cards = [];
+
+      if (currentIdentityId === 'def-sincos' || currentIdentityId === 'pitagorica-1') {
+        const sumSq = sinT * sinT + cosT * cosT;
+        cards = [
+          { label: 'sen²(θ)', val: (sinT * sinT).toFixed(4), color: 'text-emerald-800 bg-emerald-50 border-emerald-300' },
+          { label: 'cos²(θ)', val: (cosT * cosT).toFixed(4), color: 'text-blue-800 bg-blue-50 border-blue-300' },
+          { label: 'sen²(θ) + cos²(θ)', val: `${sumSq.toFixed(4)} = 1`, color: 'text-amber-900 bg-amber-50 border-amber-400' }
+        ];
+      } else if (currentIdentityId === 'pitagorica-tan') {
+        const tanT = Math.tan(theta);
+        const secT = 1 / Math.cos(theta);
+        cards = [
+          { label: '1 + tan²(θ)', val: (1 + tanT * tanT).toFixed(3), color: 'text-orange-800 bg-orange-50 border-orange-300' },
+          { label: 'sec²(θ)', val: (secT * secT).toFixed(3), color: 'text-red-800 bg-red-50 border-red-300' },
+          { label: 'Verificación', val: '0.0000 (Exacto)', color: 'text-slate-800 bg-slate-100 border-slate-300' }
+        ];
+      } else if (currentIdentityId === 'pitagorica-cot') {
+        const cotT = 1 / Math.tan(theta);
+        const cscT = 1 / Math.sin(theta);
+        cards = [
+          { label: '1 + cot²(θ)', val: (1 + cotT * cotT).toFixed(3), color: 'text-purple-800 bg-purple-50 border-purple-300' },
+          { label: 'csc²(θ)', val: (cscT * cscT).toFixed(3), color: 'text-red-800 bg-red-50 border-red-300' },
+          { label: 'Verificación', val: '0.0000 (Exacto)', color: 'text-slate-800 bg-slate-100 border-slate-300' }
+        ];
+      } else if (currentIdentityId === 'paridad-cos' || currentIdentityId === 'paridad-sin') {
+        cards = [
+          { label: 'cos(−θ) vs cos(θ)', val: `${Math.cos(-theta).toFixed(3)} = ${cosT.toFixed(3)}`, color: 'text-blue-800 bg-blue-50 border-blue-300' },
+          { label: 'sen(−θ)', val: Math.sin(-theta).toFixed(3), color: 'text-purple-800 bg-purple-50 border-purple-300' },
+          { label: '−sen(θ)', val: (-sinT).toFixed(3), color: 'text-emerald-800 bg-emerald-50 border-emerald-300' }
+        ];
+      } else if (currentIdentityId === 'comp-cos' || currentIdentityId === 'comp-sin') {
+        const comp = Math.PI / 2 - theta;
+        cards = [
+          { label: 'cos(90° − θ)', val: Math.cos(comp).toFixed(4), color: 'text-blue-800 bg-blue-50 border-blue-300' },
+          { label: 'sen(θ)', val: sinT.toFixed(4), color: 'text-emerald-800 bg-emerald-50 border-emerald-300' },
+          { label: 'sen(90° − θ) = cos(θ)', val: `${Math.sin(comp).toFixed(3)} = ${cosT.toFixed(3)}`, color: 'text-purple-800 bg-purple-50 border-purple-300' }
+        ];
+      } else if (currentIdentityId === 'supl-sin' || currentIdentityId === 'supl-cos') {
+        const supl = Math.PI - theta;
+        cards = [
+          { label: 'sen(180° − θ)', val: Math.sin(supl).toFixed(4), color: 'text-emerald-800 bg-emerald-50 border-emerald-300' },
+          { label: 'sen(θ)', val: sinT.toFixed(4), color: 'text-emerald-800 bg-emerald-50 border-emerald-300' },
+          { label: 'cos(180° − θ) = −cos(θ)', val: `${Math.cos(supl).toFixed(3)} = ${(-cosT).toFixed(3)}`, color: 'text-red-800 bg-red-50 border-red-300' }
+        ];
+      } else if (currentIdentityId === 'doble-sin') {
+        cards = [
+          { label: 'sen(2θ)', val: Math.sin(2 * theta).toFixed(4), color: 'text-purple-800 bg-purple-50 border-purple-300' },
+          { label: '2·sen(θ)·cos(θ)', val: (2 * sinT * cosT).toFixed(4), color: 'text-emerald-800 bg-emerald-50 border-emerald-300' },
+          { label: 'cos(2θ) = cos²θ − sen²θ', val: Math.cos(2 * theta).toFixed(4), color: 'text-blue-800 bg-blue-50 border-blue-300' }
+        ];
+      } else if (currentIdentityId === 'suma-angulos') {
+        const beta = (betaDeg * Math.PI) / 180;
+        const lhs = Math.sin(theta + beta);
+        const rhs = sinT * Math.cos(beta) + cosT * Math.sin(beta);
+        cards = [
+          { label: 'sen(θ + β)', val: lhs.toFixed(4), color: 'text-purple-800 bg-purple-50 border-purple-300' },
+          { label: 'sen θ cos β + cos θ sen β', val: rhs.toFixed(4), color: 'text-emerald-800 bg-emerald-50 border-emerald-300' },
+          { label: 'cos(θ + β)', val: Math.cos(theta + beta).toFixed(4), color: 'text-blue-800 bg-blue-50 border-blue-300' }
+        ];
+      }
+
+      panel.innerHTML = cards.map(c => `
+        <div class="p-3.5 rounded-2xl border-2 ${c.color} flex flex-col justify-center">
+          <span class="text-xs sm:text-sm font-bold opacity-85">${c.label}</span>
+          <span class="font-mono-code text-base sm:text-lg font-black mt-0.5">${c.val}</span>
+        </div>
+      `).join('');
+    }
+
+    // =========================================================================
+    // 8. TALLER TÁCTICO: EL GOL TRIGONOMÉTRICO ENGINE
+    // =========================================================================
+    function selectTallerStage(stageNum) {
+      currentTallerStage = stageNum;
+      const data = TALLER_PROBLEMS[stageNum];
+      if (!data) return;
+
+      // Highlight stage button
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`stage-btn-${i}`);
+        if (i === stageNum) {
+          btn.className = 'p-4 rounded-2xl border-2 text-left transition-all bg-emerald-50 border-emerald-500 shadow-md';
+          btn.querySelector('span').className = 'text-xs font-black uppercase text-emerald-700';
+        } else {
+          btn.className = 'p-4 rounded-2xl border-2 text-left transition-all bg-white border-slate-200 hover:border-emerald-300';
+          btn.querySelector('span').className = 'text-xs font-black uppercase text-slate-500';
+        }
+      }
+
+      // Update text boxes
+      document.getElementById('pitch-title').textContent = data.pitchTitle;
+      document.getElementById('pitch-badge').textContent = data.pitchBadge;
+      document.getElementById('prob-tag').textContent = data.tag;
+      document.getElementById('prob-title').textContent = data.title;
+
+      const stmtEl = document.getElementById('prob-statement');
+      const hintEl = document.getElementById('prob-hint-content');
+      const solEl = document.getElementById('prob-solution-content');
+
+      stmtEl.innerHTML = data.statement;
+      hintEl.innerHTML = data.hint;
+      solEl.innerHTML = data.solution;
+
+      // Collapse hint & solution when switching problem
+      document.getElementById('prob-hint-box').classList.add('hidden');
+      document.getElementById('prob-solution-box').classList.add('hidden');
+
+      // Render LaTeX in all updated containers
+      renderAllLatex(document.getElementById('section-taller'));
+
+      // Animate tactical play
+      triggerPlayAnimation();
+    }
+
+    function toggleTallerBox(type) {
+      const box = document.getElementById(type === 'hint' ? 'prob-hint-box' : 'prob-solution-box');
+      box.classList.toggle('hidden');
+      if (!box.classList.contains('hidden')) {
+        renderAllLatex(box);
+      }
+    }
+
+    function triggerPlayAnimation() {
+      if (ballAnimId) cancelAnimationFrame(ballAnimId);
+      ballAnimProgress = 0;
+      const step = () => {
+        ballAnimProgress += 0.025;
+        if (ballAnimProgress >= 1) {
+          ballAnimProgress = 1;
+          drawSoccerPitch();
+          return;
+        }
+        drawSoccerPitch();
+        ballAnimId = requestAnimationFrame(step);
+      };
+      ballAnimId = requestAnimationFrame(step);
+    }
+
+    function drawSoccerPitch() {
+      const W = soccerCanvas.width;
+      const H = soccerCanvas.height;
+      sCtx.clearRect(0, 0, W, H);
+
+      // 1. Grass Stripes
+      const stripeCount = 10;
+      const stripeW = W / stripeCount;
+      for (let i = 0; i < stripeCount; i++) {
+        sCtx.fillStyle = i % 2 === 0 ? '#15803d' : '#166534';
+        sCtx.fillRect(i * stripeW, 0, stripeW, H);
+      }
+
+      // 2. Pitch Markings (White Lines)
+      sCtx.save();
+      sCtx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      sCtx.lineWidth = 2.5;
+      // Outer boundary
+      sCtx.strokeRect(24, 24, W - 48, H - 48);
+      // Halfway line
+      sCtx.beginPath();
+      sCtx.moveTo(W / 2, 24);
+      sCtx.lineTo(W / 2, H - 24);
+      sCtx.stroke();
+      // Center circle (Unit Circle representation)
+      sCtx.beginPath();
+      sCtx.arc(W / 2, H / 2, 68, 0, 2 * Math.PI);
+      sCtx.stroke();
+      // Right Penalty Box & Goal
+      sCtx.strokeRect(W - 145, H / 2 - 110, 121, 220);
+      sCtx.strokeRect(W - 72, H / 2 - 55, 48, 110);
+      // Goal net frame on right
+      sCtx.fillStyle = 'rgba(255,255,255,0.22)';
+      sCtx.fillRect(W - 24, H / 2 - 38, 16, 76);
+      sCtx.strokeRect(W - 24, H / 2 - 38, 16, 76);
+      sCtx.restore();
+
+      // Player Coordinates on Pitch
+      const J1 = { x: W * 0.34, y: H * 0.50, label: 'J1 (0,0)' };
+      const J2 = { x: W * 0.52, y: H * 0.22, label: 'J2 (Izq)' };
+      const R1 = { x: W * 0.44, y: H * 0.33, label: 'R1' };
+      const J3 = { x: W * 0.54, y: H * 0.78, label: 'J3 (Der)' };
+      const R2 = { x: W * 0.61, y: H * 0.65, label: 'R2' };
+      const J4 = { x: W * 0.72, y: H * 0.46, label: 'J4' };
+      const CB1 = { x: W * 0.79, y: H * 0.36, label: 'D1' };
+      const CB2 = { x: W * 0.79, y: H * 0.58, label: 'D2' };
+      const J5 = { x: W * 0.86, y: H * 0.48, label: 'J5' };
+      const GK = { x: W * 0.94, y: H * 0.52, label: 'POR' };
+      const GOAL = { x: W - 18, y: H * 0.43 };
+
+      let ballPos = { x: J1.x, y: J1.y };
+
+      // 3. Stage-specific Tactical Diagrams & Trajectories
+      if (currentTallerStage === 1) {
+        // Unit circle centered at J1
+        sCtx.save();
+        sCtx.setLineDash([5, 5]);
+        sCtx.strokeStyle = '#fde047';
+        sCtx.lineWidth = 2;
+        sCtx.beginPath();
+        sCtx.arc(J1.x, J1.y, 130, 0, 2 * Math.PI);
+        sCtx.stroke();
+        sCtx.restore();
+
+        // Triangle A (J1 -> J2, blocked by R1)
+        drawTacticalTriangle(J1, J2, 'rgba(244, 63, 94, 0.22)', '#fda4af', 'dA = 1 (Bloqueado)', true);
+        // Triangle B (J1 -> J3, open pass)
+        drawTacticalTriangle(J1, J3, 'rgba(56, 189, 248, 0.25)', '#7dd3fc', 'dB = 1 (Pase Libre)', false);
+
+        drawPlayer(J1, '#38bdf8', 'J1');
+        drawPlayer(J2, '#38bdf8', 'J2');
+        drawPlayer(J3, '#38bdf8', 'J3');
+        drawPlayer(R1, '#f43f5e', 'R1');
+
+        // Animate ball from J1 to J3
+        ballPos.x = J1.x + (J3.x - J1.x) * ballAnimProgress;
+        ballPos.y = J1.y + (J3.y - J1.y) * ballAnimProgress;
+      }
+
+      else if (currentTallerStage === 2) {
+        // Previous pass J1 -> J3 faded
+        drawPassLine(J1, J3, 'rgba(255,255,255,0.35)', true);
+
+        // Dribble arc around R2 (-beta) & diagonal pass to J4 (alpha - beta)
+        drawPassLine(J3, J4, '#38bdf8', false, 'V = cos(α)');
+
+        // Angle arc at J3
+        sCtx.save();
+        sCtx.strokeStyle = '#fde047';
+        sCtx.lineWidth = 2;
+        sCtx.beginPath();
+        sCtx.arc(J3.x, J3.y, 40, -1.1, -0.3);
+        sCtx.stroke();
+        sCtx.fillStyle = '#fde047';
+        sCtx.font = 'bold 13px Inter, sans-serif';
+        sCtx.fillText('α − β', J3.x + 32, J3.y - 25);
+        sCtx.restore();
+
+        drawPlayer(J1, '#38bdf8', 'J1');
+        drawPlayer(J3, '#38bdf8', 'J3');
+        drawPlayer(R2, '#f43f5e', 'R2');
+        drawPlayer(J4, '#38bdf8', 'J4');
+
+        ballPos.x = J3.x + (J4.x - J3.x) * ballAnimProgress;
+        ballPos.y = J3.y + (J4.y - J3.y) * ballAnimProgress;
+      }
+
+      else if (currentTallerStage === 3) {
+        drawPassLine(J1, J3, 'rgba(255,255,255,0.25)', true);
+        drawPassLine(J3, J4, 'rgba(255,255,255,0.35)', true);
+
+        // Filtered pass J4 -> J5 between CB1 and CB2 with double angle 2alpha
+        drawPassLine(J4, J5, '#c084fc', false, '2α • P = sen(α)');
+
+        drawPlayer(J4, '#38bdf8', 'J4');
+        drawPlayer(CB1, '#f43f5e', 'D1');
+        drawPlayer(CB2, '#f43f5e', 'D2');
+        drawPlayer(J5, '#38bdf8', 'J5');
+
+        ballPos.x = J4.x + (J5.x - J4.x) * ballAnimProgress;
+        ballPos.y = J4.y + (J5.y - J4.y) * ballAnimProgress;
+      }
+
+      else if (currentTallerStage === 4) {
+        drawPassLine(J3, J4, 'rgba(255,255,255,0.25)', true);
+        drawPassLine(J4, J5, 'rgba(255,255,255,0.35)', true);
+
+        // Curved Folha Seca Shot from J5 to Top Corner GOAL
+        sCtx.save();
+        sCtx.strokeStyle = '#fbbf24';
+        sCtx.lineWidth = 4;
+        sCtx.beginPath();
+        sCtx.moveTo(J5.x, J5.y);
+        const ctrlX = (J5.x + GOAL.x) / 2;
+        const ctrlY = J5.y - 55;
+        sCtx.quadraticCurveTo(ctrlX, ctrlY, GOAL.x, GOAL.y);
+        sCtx.stroke();
+        sCtx.restore();
+
+        drawPlayer(J4, '#38bdf8', 'J4');
+        drawPlayer(J5, '#38bdf8', 'J5');
+        drawPlayer(GK, '#f43f5e', 'POR');
+
+        // Quadratic Bezier interpolation for ball
+        const t = ballAnimProgress;
+        ballPos.x = (1 - t) * (1 - t) * J5.x + 2 * (1 - t) * t * ctrlX + t * t * GOAL.x;
+        ballPos.y = (1 - t) * (1 - t) * J5.y + 2 * (1 - t) * t * ctrlY + t * t * GOAL.y;
+
+        if (ballAnimProgress > 0.85) {
+          sCtx.save();
+          sCtx.fillStyle = '#fef08a';
+          sCtx.font = 'black 24px Inter, sans-serif';
+          sCtx.fillText('¡GOL! T = 1', W * 0.62, 65);
+          sCtx.restore();
+        }
+      }
+
+      // Draw Soccer Ball
+      drawSoccerBall(ballPos.x, ballPos.y);
+    }
+
+    function drawTacticalTriangle(p1, p2, fillColor, strokeColor, label, dashed) {
+      sCtx.save();
+      sCtx.fillStyle = fillColor;
+      sCtx.beginPath();
+      sCtx.moveTo(p1.x, p1.y);
+      sCtx.lineTo(p2.x, p1.y);
+      sCtx.lineTo(p2.x, p2.y);
+      sCtx.closePath();
+      sCtx.fill();
+
+      sCtx.strokeStyle = strokeColor;
+      sCtx.lineWidth = 2.5;
+      if (dashed) sCtx.setLineDash([5, 5]);
+      sCtx.stroke();
+
+      sCtx.fillStyle = '#ffffff';
+      sCtx.font = 'bold 12px Inter, sans-serif';
+      sCtx.fillText(label, (p1.x + p2.x) / 2 - 30, (p1.y + p2.y) / 2);
+      sCtx.restore();
+    }
+
+    function drawPassLine(p1, p2, color, dashed, label = '') {
+      sCtx.save();
+      sCtx.strokeStyle = color;
+      sCtx.lineWidth = 3.5;
+      if (dashed) sCtx.setLineDash([6, 6]);
+      sCtx.beginPath();
+      sCtx.moveTo(p1.x, p1.y);
+      sCtx.lineTo(p2.x, p2.y);
+      sCtx.stroke();
+
+      if (label) {
+        sCtx.fillStyle = '#fef08a';
+        sCtx.font = 'bold 13px JetBrains Mono, monospace';
+        sCtx.fillText(label, (p1.x + p2.x) / 2 - 35, (p1.y + p2.y) / 2 - 10);
+      }
+      sCtx.restore();
+    }
+
+    function drawPlayer(p, color, code) {
+      sCtx.save();
+      // Shadow
+      sCtx.beginPath();
+      sCtx.arc(p.x + 2, p.y + 3, 14, 0, 2 * Math.PI);
+      sCtx.fillStyle = 'rgba(0,0,0,0.35)';
+      sCtx.fill();
+
+      // Jersey circle
+      sCtx.beginPath();
+      sCtx.arc(p.x, p.y, 14, 0, 2 * Math.PI);
+      sCtx.fillStyle = color;
+      sCtx.fill();
+      sCtx.lineWidth = 2.5;
+      sCtx.strokeStyle = '#ffffff';
+      sCtx.stroke();
+
+      // Player code
+      sCtx.fillStyle = '#0f172a';
+      sCtx.font = 'bold 11px Inter, sans-serif';
+      sCtx.textAlign = 'center';
+      sCtx.textBaseline = 'middle';
+      sCtx.fillText(code, p.x, p.y);
+      sCtx.restore();
+    }
+
+    function drawSoccerBall(x, y) {
+      sCtx.save();
+      sCtx.beginPath();
+      sCtx.arc(x, y, 9, 0, 2 * Math.PI);
+      sCtx.fillStyle = '#fef08a';
+      sCtx.fill();
+      sCtx.lineWidth = 2.5;
+      sCtx.strokeStyle = '#0f172a';
+      sCtx.stroke();
+
+      sCtx.beginPath();
+      sCtx.arc(x, y, 3.5, 0, 2 * Math.PI);
+      sCtx.fillStyle = '#0f172a';
+      sCtx.fill();
+      sCtx.restore();
+    }
+
+    // Boot Application
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
